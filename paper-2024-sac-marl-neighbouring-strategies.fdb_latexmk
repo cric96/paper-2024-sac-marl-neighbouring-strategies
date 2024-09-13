@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex sample-sigconf"] 1726242211.85878 "sample-sigconf.aux" "sample-sigconf.bbl" "sample-sigconf" 1726242371.29472 0
+["bibtex paper-2024-sac-marl-neighbouring-strategies"] 1726243060.35483 "paper-2024-sac-marl-neighbouring-strategies.aux" "paper-2024-sac-marl-neighbouring-strategies.bbl" "paper-2024-sac-marl-neighbouring-strategies" 1726243060.96963 0
   "./ACM-Reference-Format.bst" 1726152764 90332 18dc4e5c9b5c2ddd337e9f97727d04f1 ""
   "./sample-bibliography.bib" 1726152764 51459 624b9731f3d840a81bb196c6e72044cd ""
-  "sample-sigconf.aux" 1726242371.17959 1298 d32a236893a77996f96f315d6e7a408e "pdflatex"
+  "paper-2024-sac-marl-neighbouring-strategies.aux" 1726243060.85074 1291 52a1504c6235c5eb3845ed753aa6b7b2 "pdflatex"
   (generated)
-  "sample-sigconf.bbl"
-  "sample-sigconf.blg"
+  "paper-2024-sac-marl-neighbouring-strategies.bbl"
+  "paper-2024-sac-marl-neighbouring-strategies.blg"
   (rewritten before read)
-["pdflatex"] 1726242370.7167 "/home/gianluca/Downloads/ACM_SigConf_SAC2025/sample-sigconf.tex" "sample-sigconf.pdf" "sample-sigconf" 1726242371.29481 0
-  "/home/gianluca/Downloads/ACM_SigConf_SAC2025/sample-sigconf.tex" 1726242370.53626 5442 7134a612c3a80f740a244d23a3a9672c ""
+["pdflatex"] 1726243060.39337 "/home/gianluca/Downloads/ACM_SigConf_SAC2025/paper-2024-sac-marl-neighbouring-strategies.tex" "paper-2024-sac-marl-neighbouring-strategies.pdf" "paper-2024-sac-marl-neighbouring-strategies" 1726243060.96973 0
+  "/home/gianluca/Downloads/ACM_SigConf_SAC2025/paper-2024-sac-marl-neighbouring-strategies.tex" 1726242971.23144 9542 fe75d0963b5558c604de954f9c25ab65 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc" 1716849630 7693 0f2dce6d313c82989ec3a67fc24df2a0 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc" 1716849630 2921 8ca0eb0831f9bc5da080d3697cfe67bf ""
   "/usr/share/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc" 1716849630 2933 9ad527ce78d7c5fa0a642dead095f172 ""
@@ -194,14 +194,13 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1718098724.24231 5315089 36a50f657f2c9b3a2355dce7aa7ba7b1 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1724681585 7753075 ff6291433dae28917396bdfcfc97ff1c ""
   "acmart.cls" 1726152764 119402 7d3e43c6942ada4777b1e2cee00dd44b ""
-  "sample-sigconf.aux" 1726242371.17959 1298 d32a236893a77996f96f315d6e7a408e "pdflatex"
-  "sample-sigconf.bbl" 1726242211.88758 1785 8ed37e936ba16de73718c10d329b7108 "bibtex sample-sigconf"
-  "sample-sigconf.out" 1726242371.17959 1137 28576015177400a9f3fbbac98963b809 "pdflatex"
-  "sample-sigconf.tex" 1726242370.53626 5442 7134a612c3a80f740a244d23a3a9672c ""
-  "samplebody-conf.tex" 1726242294.66022 4123 c9f9528571ca29d2583556d1da8d486b ""
+  "paper-2024-sac-marl-neighbouring-strategies.aux" 1726243060.85074 1291 52a1504c6235c5eb3845ed753aa6b7b2 "pdflatex"
+  "paper-2024-sac-marl-neighbouring-strategies.bbl" 1726243060.38741 1785 8ed37e936ba16de73718c10d329b7108 "bibtex paper-2024-sac-marl-neighbouring-strategies"
+  "paper-2024-sac-marl-neighbouring-strategies.out" 1726243060.85074 1137 28576015177400a9f3fbbac98963b809 "pdflatex"
+  "paper-2024-sac-marl-neighbouring-strategies.tex" 1726242971.23144 9542 fe75d0963b5558c604de954f9c25ab65 ""
   (generated)
-  "sample-sigconf.aux"
-  "sample-sigconf.log"
-  "sample-sigconf.out"
-  "sample-sigconf.pdf"
+  "paper-2024-sac-marl-neighbouring-strategies.aux"
+  "paper-2024-sac-marl-neighbouring-strategies.log"
+  "paper-2024-sac-marl-neighbouring-strategies.out"
+  "paper-2024-sac-marl-neighbouring-strategies.pdf"
   (rewritten before read)

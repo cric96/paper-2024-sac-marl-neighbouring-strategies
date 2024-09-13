@@ -17,3 +17,7 @@ _minted*/
 *.vrb
 build/
 out/
+paper-2024-sac-marl-neighbouring-strategies.pdf
+paper-2024-sac-marl-neighbouring-strategies.fbd_latexmk
+paper-2024-sac-marl-neighbouring-strategies.fls
+paper-2024-sac-marl-neighbouring-strategies.fbd_latexmk
