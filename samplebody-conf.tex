@@ -1,0 +1,70 @@
+\section{Introduction}
+\begin{itemize}
+\item Highlight the growing importance of MARL and its applications.
+\item Discuss the challenges of MARL: non-stationarity, scalability, partial observability, and credit assignment.
+\item Introduce the limitations of centralized training in MARL, specifically scalability issues and online learning challenges.
+\item Present the motivation for exploring neighbor-based decentralized training strategies as a potential solution.
+\item State the main objectives of the paper: to evaluate and compare the effectiveness of different neighbor-based methods and analyze their trade-offs.
+\end{itemize}
+
+\section{Background}
+\begin{itemize}
+\item Introduce Multi-Agent Reinforcement Learning (MARL) and its specific challenges.
+\item Provide a formalization (networked agents?) and explain the key concepts: joint action space, shared reward, partial observability, and credit assignment.
+\item Explain different MARL training schemes: centralized training (CTCE, CTDE), distributed training (DTDE).
+\end{itemize}
+
+\section{Neighboring-Based Distributed Learning Strategies}
+\begin{itemize}
+\item Provide a detailed explanation of each neighbor-based method:
+\begin{itemize}
+\item \textbf{Independent learners:} Emphasize its simplicity and scalability but highlight its vulnerability to non-stationarity.
+\item \textbf{NN-Averaging:} Describe the weight averaging process, discuss the influence of neighbor selection and averaging frequency, and mention weighted averaging variations.
+\item \textbf{NN-Consensus:} Explain the selection of the best-performing network and its potential benefits and drawbacks.
+\item \textbf{Experience Sharing:} Detail how agents share experiences, discuss asynchronous vs. synchronous sharing, and highlight its advantages in sparse interaction environments.
+\end{itemize}
+\end{itemize}
+
+\section{Experimental Setup}
+\begin{itemize}
+\item Introduce the custom "collect the items" multi-agent environment:
+\begin{itemize}
+\item Describe the environment's dynamics, agent goals, and challenges.
+\item Specify the action space (continuous and discrete) and observation space design.
+\item Explain the reward structure, emphasizing the components that encourage cooperation.
+\end{itemize}
+\item Detail the implementation framework (Gymnasium, RLlib, PyTorch).
+\item Specify the chosen RL algorithm (DQN) and its hyperparameter configuration.
+\item Define the evaluation metrics: average episode length and average reward.
+\end{itemize}
+
+\section{Results and Evaluation}
+\begin{itemize}
+\item \textbf{Performance comparison:}
+\begin{itemize}
+\item Present the results of each distributed strategy against the centralized training baseline.
+\item Use graphs and statistical analysis to compare the average episode length and average reward.
+\item Highlight which neighbor-based methods perform comparably to centralized training.
+\end{itemize}
+\item \textbf{Scalability analysis:}
+\begin{itemize}
+\item Describe how the experiments were modified to assess scalability (increasing agents, spawn area).
+\item Show how each method scales with the increasing complexity, using appropriate visualizations.
+\item Discuss the implications of using pre-trained models with a larger number of agents.
+\end{itemize}
+\item \textbf{Communication overhead analysis:}
+\begin{itemize}
+\item Quantify the amount of information exchange for each strategy.
+\item Compare the communication overhead across different neighborhood sizes, possibly using graphs.
+\item Discuss the trade-offs between performance and communication efficiency.
+\item Mention potential techniques for reducing communication overhead.
+\end{itemize}
+\end{itemize}
+
+\section{Conclusion}
+\begin{itemize}
+\item Summarize the key findings of the paper.
+\item Emphasize the viability of neighbor-based methods as alternatives to centralized training in MARL.
+\item Discuss the trade-offs observed in terms of performance, scalability, and communication overhead.
+\item Suggest potential directions for future research, such as exploring hybrid approaches or more advanced communication protocols.
+\end{itemize}
