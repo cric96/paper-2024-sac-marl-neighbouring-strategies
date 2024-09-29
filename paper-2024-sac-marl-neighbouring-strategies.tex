@@ -98,11 +98,33 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-  Multi-Agent Reinforcement Learning (MARL) is gaining popularity as a powerful framework for training agents to collaborate and compete in complex environments. However, MARL introduces unique challenges, such as non-stationarity and partial observability, that complicate the training process.  
-  While centralized training methods can address some of these challenges, they often face scalability limitations as the number of agents grows. This paper investigates the effectiveness of various neighbor-based decentralized training strategies as a viable alternative to centralized training. We evaluate Experience Sharing, Nearest Neighboring Averaging, and Nearest Neighboring Consensus methods in a custom multi-agent environment and compare their performance against centralized training. Our results show that neighbor-based methods can achieve comparable performance to centralized training while offering improved scalability and communication efficiency. 
-  We discuss the trade-offs between these methods and provide insights into their applicability in different scenarios.
-  %% More -- add the fact that this make it possible to train agents in a decentralized manner, which is more realistic and scalable than centralized training.
+Multi-Agent Reinforcement Learning  is gaining popularity as a powerful extension of
+  Single-Agent Reinforcement Learning for training collaborative or competitive agents
+  in complex environments. 
+%
+MARL introduces unique challenges, such as non-stationarity, partial observability, 
+  and credit assignment that complicate the learning process.  
+%
+Typically, in the literature, centralized training methods are used to tackle some of these challenges, 
+  although they often face scalability limitations as the number of agents grows.
+%
+For this reason, decentralized training techniques have been proposed, however, 
+  generally they have a longer convergence time compared to centralized ones 
+  and may lead to instability.
+%
+This paper investigates the effectiveness of various neighbor-based decentralized training strategies 
+  as a viable alternative to centralized training. 
+%  
+We evaluate Experience Sharing, Nearest Neighboring Averaging, and Nearest Neighboring Consensus methods 
+  in a custom multi-agent environment and compare their performance against centralized training. 
+%  
+Our results show that neighbor-based methods can achieve comparable performance to centralized training 
+  while offering improved scalability and communication efficiency. 
+%
+% Finally, we discuss the trade-offs between these methods and provide insights into their applicability 
+%   in different scenarios.
 \end{abstract}
+
 %
 \begin{CCSXML}
 <ccs2012>
