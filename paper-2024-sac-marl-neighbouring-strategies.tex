@@ -98,8 +98,8 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-Multi-Agent Reinforcement Learning  is gaining popularity as a powerful extension of
-  Single-Agent Reinforcement Learning for training collaborative or competitive agents
+Multi-agent reinforcement learning  is gaining popularity as a powerful extension of
+  single-agent reinforcement learning for training collaborative or competitive agents
   in complex environments. 
 %
 MARL introduces unique challenges, such as non-stationarity, partial observability, 
@@ -162,34 +162,68 @@ Our results show that neighbor-based methods can achieve comparable performance 
 
 \section{Introduction}
 
-\gianlu{
-Highlight the growing importance of MARL and its applications.
-
-Discuss the challenges of MARL: non-stationarity, scalability, partial observability, and credit assignment.
-
-Introduce the limitations of centralized training in MARL, specifically scalability issues and online learning challenges.
-
-Present the motivation for exploring neighbor-based decentralized training strategies as a potential solution.
-
-State the main objectives of the paper: to evaluate and compare the effectiveness of different neighbor-based methods and analyze their trade-offs.
-}
-
-In recent years, machine learning and deep learning methods have gained more and more interests. 
+Distributed artificial intelligence has emerged as a prominent research area in recent years, 
+evolving from its roots in multi-agent systems engineering 
+through advancements in distributed learning. 
 %
-In particular, regarding Multi-Agents Systems and Robotics, \emph{Reinforcement Learning} showed promising results. 
+This evolution has encompassed collective behavior learning (e.g., COIN) 
+and culminated in the modern field of multi-agent deep reinforcement learning (MADRL). 
+%
+MADRL has gained significant traction due to its flexibility and capacity to learn diverse behaviors, 
+ranging from cooperative to competitive, 
+as demonstrated in various case studies involving video games, swarm robotics, 
+and traffic management. 
+%
+This paper focuses on the subdomain of cooperative multi-agent reinforcement learning, 
+a particularly active and impactful area of research within MADRL.
 
-Single-Agent Reinforcement Learning (SARL) has been extensively studied and used in literature to solve tasks in a broad range 
-  of applied scenarios~\cite{DBLP:journals/air/SinghKS22,DBLP:journals/artmed/CoronatoNPP20,DBLP:journals/comsur/LuongHGNWLK19}.
+Many prominent approaches in this field employ a centralized training and decentralized execution paradigm
+ (e.g., COMA, MAPPO, MADPG), 
+ where a centralized learner trains distributed policies that are subsequently executed independently. 
+ While facilitating decentralized runtime operation and avoiding single points of failure, 
+ this approach typically entails an offline learning phase (using simulators and centralized computation) 
+ followed by online execution with no further learning. 
+ This inherent limitation hinders adaptation to changing environments or tasks at runtime.  
+ While fully independent learners offer a potential solution for online learning,
+ they often underperform centralized counterparts due to instability in training and a lack of differentiation between agents and their interactions with the environment. 
+ %
+ However, in many real-world multi-agent systems, 
+ agents only interact with a limited subset of the overall system, 
+ as exemplified by limited sensing ranges in swarm robotics or localized interactions.  
+ This observation also holds true in other natural systems, such as animal herds.
 
+Therefore, 
+this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information. 
+This approach aims to: 
+\begin{itemize}
+  \item incorporate richer information compared to independent learners, and
+  \item facilitate the emergence of collective behaviors through local interactions.
+\end{itemize}
+Specifically, we investigate three distinct neighboring-based training strategy encompassing both neural network-based approaches 
+(e.g., neighboring averaging and consensus) 
+and experience-based methods inspired by centralized experience sharing. 
+We demonstrate the effectiveness of these strategies in comparison to both centralized and fully distributed approaches, 
+highlighting how neighborhood-based policies offer a compelling compromise between these two extremes.
 
-\section{Background}
+The remainder of this paper is structured as follows.
+Section~\ref{sec:background} provides an overview of multi-agent reinforcement learning,
+highlighting the key challenges and training paradigms.
+Section~\ref{sec:neighboring} introduces the proposed neighboring-based training strategies,
+detailing their implementation and operation.
+Section~\ref{sec:experiments} presents the experimental setup and evaluation metrics.
+Section~\ref{sec:results} discusses the results of the experiments,
+comparing the performance of the neighboring-based methods against centralized training.
+Finally, Section~\ref{sec:conclusion} concludes the paper,
+summarizing the key findings and outlining potential future research directions.
+
+\section{Background}\label{sec:background}
 \begin{itemize}
 \item Introduce Multi-Agent Reinforcement Learning (MARL) and its specific challenges.
 \item Provide a formalization (networked agents?) and explain the key concepts: joint action space, shared reward, partial observability, and credit assignment.
 \item Explain different MARL training schemes: centralized training (CTCE, CTDE), distributed training (DTDE).
 \end{itemize}
 
-\section{Neighboring-Based Distributed Learning Strategies}
+\section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
 \begin{itemize}
 \item Provide a detailed explanation of each neighbor-based method:
 \begin{itemize}
@@ -199,7 +233,7 @@ Single-Agent Reinforcement Learning (SARL) has been extensively studied and used
 \item \textbf{Experience Sharing:} Detail how agents share experiences, discuss asynchronous vs. synchronous sharing, and highlight its advantages in sparse interaction environments.
 \end{itemize}
 \end{itemize}
-\section{Experimental Setup}
+\section{Experimental Setup}\label{sec:experiments}
 \begin{itemize}
 \item Introduce the custom "collect the items" multi-agent environment:
 \begin{itemize}
@@ -212,7 +246,7 @@ Single-Agent Reinforcement Learning (SARL) has been extensively studied and used
 \item Define the evaluation metrics: average episode length and average reward.
 \end{itemize}
 
-\section{Results and Evaluation}
+\section{Results and Evaluation}\label{sec:results}
 \begin{itemize}
 \item \textbf{Performance comparison:}
 \begin{itemize}
@@ -235,7 +269,7 @@ Single-Agent Reinforcement Learning (SARL) has been extensively studied and used
 \end{itemize}
 \end{itemize}
 
-\section{Conclusion}
+\section{Conclusion}\label{sec:conclusion}
 \begin{itemize}
 \item Summarize the key findings of the paper.
 \item Emphasize the viability of neighbor-based methods as alternatives to centralized training in MARL.
