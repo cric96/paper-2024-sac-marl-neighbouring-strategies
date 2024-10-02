@@ -1,6 +1,8 @@
 \documentclass[sigconf]{acmart}
 
 \usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage{autobreak}
 \usepackage{mytodonotes}
 
 % Copyright
@@ -278,7 +280,34 @@ Similar to the individual reward function, a global average reward function can 
 
 \[ \bar{Q}(s, a) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{\infty} \gamma^t \bar{\mathcal{R}}(s_t, a_t) | s_0 = s, a_0 = a \right] \]
 
-where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy.  The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
+where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy. 
+The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
+There are several algorithms which try to find the optimal Q-value function, one of the most popular is the deep q-learning algorithm.
+\subsubsection{Deep Q-Learning Formalization}
+deep q-learning utilizes a deep neural network, 
+often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
+This network takes the state $s$ as input and outputs a vector of Q-values, one for each possible action $a \in \mathcal{A}$.  
+The optimal action-value function, denoted $Q^*(s, a)$, satisfies the Bellman optimality equation:
+
+\[ Q^*(s, a) = \mathbb{E}_{s' \sim \mathcal{P}} \left[ r + \gamma \max_{a'} Q^*(s', a') | s, a \right] \]
+
+where $\mathcal{P}$ is the state transition probability distribution.  
+Deep Q-learning aims to train the Q-network to approximate $Q^*(s, a)$ by minimizing the loss function:
+
+\[ \mathcal{L}(\theta) = \mathbb{E}_{(s, a, r, s') \sim \mathcal{D}} \left[ \left( r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta) \right)^2 \right] \]
+
+where $\theta$ are the parameters of the Q-network, $\theta^-$ are the parameters of a target Q-network (used for stability), 
+and $\mathcal{D}$ is the experience replay buffer, a collection of past experiences $(s, a, r, s')$.
+%
+In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
+For centralized training, the global state $s$ can be used as input. 
+The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., independent Q-learning, value decomposition methods).  
+For example, in independent deep Q-learning, each agent updates its Q-network independently using its local reward $r^i$:
+\begin{equation}
+  \resizebox{\linewidth}{!}{$
+  \mathcal{L}^i(\theta^i) = \mathbb{E}_{(o^i, a^i, r^i, o'^i) \sim \mathcal{D}^i} \left[ \left( r^i + \gamma \max_{a'^i} Q^i(o'^i, a'^i; \theta^{i-}) - Q^i(o^i, a^i; \theta^i) \right)^2 \right]
+  $}
+  \end{equation}
 %\subsection{Key Concepts}
 
 \subsection{Learning Schemes}
@@ -324,10 +353,20 @@ from seminal works like [cite ] and [cite] to more recent contributions like [ci
 In the following, we briefly discuss some of the most relevant approaches in the field.
 \paragraph{Independent Learners}
 
+\paragraph{Neighboring-Based Methods}
 \paragraph{Centralized Actor-Critic Methods}
 
 \subsection{Motivation}
-
+MADRL faces a critical challenge in balancing scalability and performance.  
+Centralized training methods, while effective, often suffer from computational bottlenecks and difficulties scaling to large numbers of agents. 
+While distributed training approaches offer improved scalability, 
+they frequently assume independent learners, 
+neglecting crucial inter-agent coordination and leading to suboptimal global performance.  
+%
+Neighbor-based methods have shown promise in simpler, tabular settings by enabling localized coordination,
+but their integration with deep reinforcement learning remains largely unexplored. 
+This work bridges this gap by introducing a novel approach that combines the power of deep learning with the scalability of neighbor-based communication.  
+Our method aims to achieve both efficient decentralized learning and effective coordination, enabling online adaptation and robust performance in complex multi-agent environments.
 \section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
 \begin{itemize}
 \item Provide a detailed explanation of each neighbor-based method:
