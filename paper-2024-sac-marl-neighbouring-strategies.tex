@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{autobreak}
 \usepackage{mytodonotes}
+\usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{cleveref}
 
@@ -51,19 +52,6 @@
 \renewcommand{\shorttitle}{SIG Proceedings Paper in LaTeX Format}
 
 
-% \author{Nicolò Malucelli}
-% \orcid{1234-5678-9012}
-% \affiliation{%
-%   \institution{University of Bologna}
-%   \streetaddress{Via dell'Università, 50}
-%   \city{Cesena} 
-%   \country{Italy}
-% }
-% \email{nicolo.malucelli@studio.unibo.it}
-
-% \author{Davide Domini}
-% \orcid{1234-5678-9012}
-% \affiliation{%
 %   \institution{University of Bologna}
 %   \streetaddress{Via dell'Università, 50}
 %   \city{Cesena} 
@@ -76,20 +64,8 @@
 %   \institution{University of Bologna}
 %   \streetaddress{Via dell'Università, 50}
 %   \city{Cesena} 
-%   \country{Italy}
-% }
-% \email{gianluca.aguzzi@unibo.it}
+%   \country{Italy}\usepackage{algorithm}
 
-% \author{Mirko Viroli}
-% \affiliation{%
-%   \institution{University of Bologna}
-%   \streetaddress{Via dell'Università, 50}
-%   \city{Cesena} 
-%   \country{Italy}
-% }
-% \email{mirko.viroli@unibo.it}
-
-% % The default list of authors is too long for headers}
 % \renewcommand{\shortauthors}{N. Malucelli et al.}
 
 \author{Anonymous Author}
@@ -398,19 +374,69 @@ the update rule for agent $i$ at time $t+1$ is:
   \theta^{t+1}_i = \theta^t_i + \alpha \sum_{j \in \mathcal{N}_k(i)} \frac{1}{k} \theta^t_j
 \end{equation}
 
-\subsection{Nearest Neighboring Consensus}
+\subsection{K-Nearest Neighboring Consensus}
+In case of homogeneous agents (i.e., when all agents have the same action and observation space),
+the goal of learning is to find a common policy that all agents can follow.
+This approach is typically used in large-scale systems where agents are identical and need to reach a consensus---see [cite].
+%
+In this case, instead of forcing a common policy, we can let agents learn independently and then select the best-performing agent as the reference for the others, leading to a consensus on the best policy.
+%
+In this way, each agent $i$ continue to learn independently, but at each iteration, it updates its Q-network using the Q-values of the best-performing agent in its neighborhood.
+
+The best performing agent is selected based on the average reward it has received in the last $n$ episodes.
+Formally, the update rule for agent $i$ at time $t+1$ is:
+\begin{equation}
+  \theta^{t+1}_i \leftarrow \theta^t_{\text{best}}
+\end{equation}
+where $\theta^t_{\text{best}}$ is the Q-network of the best-performing agent in the neighborhood $\mathcal{N}_k(i)$ at time $t$.
 
 \subsection{Experience Sharing}
+Experience sharing is a simple yet effective method for distributed learning.
+This approach is typically used in centralized training to improve sample efficiency and learning stability.
+In our distributed setting, each agent maintains its own experience replay buffer, but it also shares a fraction of its experiences with its neighbors.
+This allows agents to learn from each other's experiences, potentially accelerating learning and improving coordination because agents can learn from each other's mistakes and successes.
+%
+Formally, the reply buffer of agent $i$ at time $t$ is $\mathcal{D}^t_i = \{(o^i, a^i, r^i, o'^i)\}$.
+At each iteration, agent $i$ shares a fraction $\beta$ of its experiences with its neighbors in $\mathcal{N}_k(i)$.
+The update rule for agent $i$ at time $t+1$ is:
+\begin{equation}
+  \mathcal{D}^{t+1}_i = \mathcal{D}^t_i \cup \bigcup_{j \in \mathcal{N}_k(i)} \beta \mathcal{D}^t_j
+\end{equation}
+\subsection{Neighboring-Based Training with Deep Q-Learning}
+The neighboring-based training strategies can be integrated with deep Q-learning to enable distributed learning in multi-agent settings.
+%
+The algorithm follow the same structure as the deep Q-learning algorithm, but with the addition of the neighboring-based intereactions.
+%
+This may happen with a different frequency for each strategy, depending on the communication overhead and the desired level of coordination.
 
-\begin{itemize}
-\item Provide a detailed explanation of each neighbor-based method:
-\begin{itemize}
-\item \textbf{Independent learners:} Emphasize its simplicity and scalability but highlight its vulnerability to non-stationarity.
-\item \textbf{NN-Averaging:} Describe the weight averaging process, discuss the influence of neighbor selection and averaging frequency, and mention weighted averaging variations.
-\item \textbf{NN-Consensus:} Explain the selection of the best-performing network and its potential benefits and drawbacks.
-\item \textbf{Experience Sharing:} Detail how agents share experiences, discuss asynchronous vs. synchronous sharing, and highlight its advantages in sparse interaction environments.
-\end{itemize}
-\end{itemize}
+In [ref] we provide a detailed description of the integration of the neighboring-based strategies with deep Q-learning.
+\begin{algorithm}
+  \caption{Neighboring-Based Deep Q-Learning}
+  \label{alg:neighbor_dqn}
+  \ForEach{agent $i \in N$}{
+      Initialize Q-network $Q^i(o^i, a^i; \theta^i)$ and target network $Q^{i-}(o^i, a^i; \theta^{i-})$\\
+      Initialize replay buffer $\mathcal{B}^i$
+  }
+  \For{episode = 1 to M}{
+      \ForEach{agent $i \in N$}{
+          Initialize initial observation $o_0^i$
+      }
+      \For{t = 0 to T}{
+          \ForEach{agent $i \in N$}{
+              Select action $a_t^i$ based on $\epsilon$-greedy policy using $Q^i(o_t^i, a^i; \theta^i)$\\
+              Execute action $a_t^i$ and observe reward $r_{t+1}^i$ and next observation $o_{t+1}^i$\\
+              Store $(o_t^i, a_t^i, r_{t+1}^i, o_{t+1}^i)$ in $\mathcal{B}^i$\\
+              Sample a mini-batch from $\mathcal{B}^i$\\
+              Calculate target values using chosen neighboring strategy (see below)\\
+              Update $\theta^i$ by minimizing the TD error\\
+              Every C steps, update target network $\theta^{i-} \leftarrow \theta^i$\\
+              \textbf{
+              Every S steps, perform neighbor interaction (e.g., averaging, consensus, experience sharing)}
+          }
+      }
+  }
+\end{algorithm}
+
 \section{Experimental Setup}\label{sec:experiments}
 \begin{itemize}
 \item Introduce the custom "collect the items" multi-agent environment:
