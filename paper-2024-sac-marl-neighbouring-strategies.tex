@@ -165,49 +165,47 @@ Our results show that neighbor-based methods can achieve comparable performance 
 \section{Introduction}
 The increasing complexity of real-world systems, from robotic swarms to smart grids, demands intelligent control strategies capable of adapting to dynamic and often unpredictable environments.
 %
-In this direction, reinforcement learning (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents to interact with their environment and learn optimal policies through trial and error.
+In this direction, \emph{reinforcement learning} (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents to interact with their environment and learn optimal policies through trial and error.
 %
-Moving beyond single-agent settings, multi-agent reinforcement learning (MARL)~\cite{bucsoniu2010multi} extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
+Moving beyond single-agent settings, \emph{multi-agent reinforcement learning} (MARL)~\cite{bucsoniu2010multi} extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
 %
 Recent advances in deep learning have further revolutionized the field, 
 enabling the training of complex policies in high-dimensional state and action spaces, 
-leading to the emergence of multi-agent deep reinforcement learning (MADRL)~\cite{gronauer2022multi}.
+leading to the emergence of \emph{multi-agent deep reinforcement learning} (MADRL)~\cite{gronauer2022multi}.
 %
 MADRL has gained significant traction due to its flexibility and capacity to learn diverse behaviors, 
 ranging from cooperative~\cite{gupta2017cooperative} to competitive~\cite{tampuu2017multiagent}, 
 as demonstrated in various case studies involving video games~\cite{shao2019survey}, robotics~\cite{orr2023multi},
 and traffic management. 
 %
-This paper focuses on the subdomain of cooperative multi-agent reinforcement learning, 
+This paper focuses on the subdomain of \emph{cooperative multi-agent reinforcement learning}, 
 a particularly active and impactful area of research within MADRL~\cite{oroojlooy2023review}.
 
 \sloppy
 Many prominent approaches in this field employ a centralized training and decentralized execution paradigm
- (e.g., COMA~\cite{foerster2018counterfactual}, MAPPO~\cite{yu2022surprising}, MADPG), 
+ (e.g., COMA~\cite{foerster2018counterfactual}, MAPPO~\cite{yu2022surprising}, MADDPG~\cite{DBLP:conf/nips/LoweWTHAM17}, QMIX~\cite{DBLP:conf/icml/RashidSWFFW18}, QTRAN~\cite{DBLP:conf/icml/SonKKHY19}), 
  where a centralized learner trains distributed policies that are subsequently executed independently. 
  While facilitating decentralized runtime operation and avoiding single points of failure, 
  this approach typically entails an offline learning phase (using simulators and centralized computation) 
  followed by online execution with no further learning. 
  This inherent limitation hinders adaptation to changing environments or tasks at runtime.  
- While fully independent learners offer a potential solution for online learning,
+% 
+While fully independent learners~\cite{abed2016comparison} offer a potential solution for online learning,
  they often underperform centralized counterparts due to instability in training and a lack of differentiation between agents and their interactions with the environment. 
- %
- However, in many real-world multi-agent systems, 
- agents only interact with a limited subset of the overall system, 
+%
+However, in many real-world multi-agent systems, 
+ agents only interact with a limited subset of the overall system (also called \emph{networked agents}),
  as exemplified by limited sensing ranges in swarm robotics or localized interactions.  
  This observation also holds true in other natural systems, such as animal herds.
-
-
+%
 Therefore, 
-this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information---in this research area is typically referred to as \emph{networked agents}.
+this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information.
 This approach aims to: 
-\begin{itemize}
-  \item incorporate richer information compared to independent learners, and
-  \item facilitate the emergence of collective behaviors through local interactions.
-\end{itemize}
-Specifically, we investigate three distinct neighboring-based training strategy encompassing both neural network-based approaches 
+i) incorporate richer information compared to independent learners, and
+ii) facilitate the emergence of collective behaviors through local interactions between networked agents.
+Specifically, we investigate three distinct neighboring-based training strategies encompassing both neural network-based approaches 
 (e.g., neighboring averaging and consensus) 
-and experience-based methods inspired by centralized experience sharing. 
+and experience-based methods inspired by centralized experience sharing~\cite{DBLP:conf/nips/ChristianosSA20}. 
 We demonstrate the effectiveness of these strategies in comparison to both centralized and fully distributed approaches, 
 highlighting how neighborhood-based policies offer a compelling compromise between these two extremes.
 
