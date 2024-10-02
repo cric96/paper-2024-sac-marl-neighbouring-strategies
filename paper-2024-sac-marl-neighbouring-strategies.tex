@@ -281,8 +281,42 @@ Similar to the individual reward function, a global average reward function can 
 where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy.  The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
 %\subsection{Key Concepts}
 
-\subsection{Training Schemes}
+\subsection{Learning Schemes}
+Multi-agent learning can be categorized based on the training scheme and the information accessibility for agents. 
+Two prominent paradigms are centralized training with decentralized execution (CTDE) and decentralized training with decentralized execution (DTDE).
 
+\paragraph{Centralized Training with Decentralized Execution (CTDE)}
+In CTDE, a central learner trains all agents, 
+but execution of the learned policy is decentralized. 
+This process typically involves two phases:
+\begin{itemize}
+    \item \textbf{Offline training:} agents interact with a simulator or environment, 
+    gathering experience data used to update the central learner's policy.
+    \item \textbf{Online execution:} agents deploy the learned policy in the environment without further learning.
+\end{itemize}
+This approach offers several benefits.  
+Leveraging a centralized dataset allows for efficient learning, 
+potentially exploiting global information, 
+which is crucial in cooperative scenarios requiring coordinated actions. 
+Furthermore, decentralized execution allows agents to act independently after training.
+%
+However, CTDE has limitations. 
+Scalability can become problematic with a large number of agents. 
+The reliance on a central learner hinders adaptation to dynamic environments or tasks during runtime.
+\sloppy
+\paragraph{Decentralized Training with Decentralized Execution (DTDE)}
+DTDE eliminates the central learner; each agent learns independently. 
+Inter-agent cooperation and communication can be incorporated during both training and execution. 
+Unlike CTDE, training and execution phases are not necessarily separate. 
+Simultaneous learning and execution allow for adaptation to changing environments or tasks at runtime.
+%
+Key advantages of DTDE include scalability with the number of agents and adaptability to dynamic environments.
+%
+However, DTDE faces challenges. 
+Convergence time is often longer compared to centralized training. 
+The lack of central coordination can lead to instability and difficulties in differentiating agents and their environmental interactions. 
+Online learning in DTDE can introduce non-stationarity if agents do not account for other agents' evolving policies during training, 
+as the environment effectively changes from each agent's perspective.
 \subsection{State of the Art}
 
 \subsection{Motivation}
