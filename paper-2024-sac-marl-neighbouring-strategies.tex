@@ -368,6 +368,41 @@ but their integration with deep reinforcement learning remains largely unexplore
 This work bridges this gap by introducing a novel approach that combines the power of deep learning with the scalability of neighbor-based communication.  
 Our method aims to achieve both efficient decentralized learning and effective coordination, enabling online adaptation and robust performance in complex multi-agent environments.
 \section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
+This section introduces three neighboring-based distributed learning strategies for multi-agent reinforcement learning. 
+These strategies leverage local interactions between agents to improve learning efficiency and coordination.
+For this investigation, we focus on deep Q-learning as the underlying learning algorithm,
+and we consider the following strategies:
+ k-nearest neighbor averaging, k-nearest neighbor consensus, and experience sharing.
+
+
+Since these strategies are in general based on the notion of k-nearest neighbors,
+we first introduce this concept and then describe each strategy in detail.
+Formally, consider a \emph{weighted} communication graph $\mathcal{G} = (N, E, W)$, where $N$ is the set of agents, where $W: E \rightarrow \mathbb{R}^+$ is a weight function assigning a positive weight to each edge.  
+Let $d(i,j)$ denote the shortest path length between agents $i$ and $j$ in the weighted graph $\mathcal{G}$. 
+This can be calculated, for instance, using Dijkstra's algorithm. 
+The length of a path is the sum of the weights of the edges along the path. If no path exists between $i$ and $j$, we set $d(i,j) = \infty$.
+%
+Then, the set of $k$-nearest neighbors of agent $i$ is defined as:
+$$ \mathcal{N}_k(i) = { j \in N \setminus {i} \mid \text{rank}(d(i,j)) \leq k } $$
+where $\text{rank}(d(i,j))$ denotes the rank of the distance $d(i,j)$ among all distances from agent $i$ to other agents in $N \setminus {i}$, sorted in ascending order (e..g, $\text{rank}(d(i,j)) = 1$ for the smallest distance).
+Ties can be broken arbitrarily.
+
+\subsection{K-Nearest Neighbor Averaging}
+This approach averages an agent's Q-values with those of its nearest neighbors. 
+Each agent maintains a local Q-network and shares its Q-values with its neighbors. 
+The neighbors average the received Q-values and use the result to update their own Q-networks. 
+This leverages the collective knowledge of neighboring agents to improve learning.
+%
+Formally, giving $\theta^t_i, i \in N$ the parameters of the Q-networks of the agent $i$ at the time $t$,
+the update rule for agent $i$ at time $t+1$ is:
+\begin{equation}
+  \theta^{t+1}_i = \theta^t_i + \alpha \sum_{j \in \mathcal{N}_k(i)} \frac{1}{k} \theta^t_j
+\end{equation}
+
+\subsection{Nearest Neighboring Consensus}
+
+\subsection{Experience Sharing}
+
 \begin{itemize}
 \item Provide a detailed explanation of each neighbor-based method:
 \begin{itemize}
