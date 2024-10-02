@@ -98,12 +98,12 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-Multi-agent reinforcement learning  is gaining popularity as a powerful extension of
+Multi-agent deep reinforcement learning (MADRL) is gaining popularity as a powerful extension of
   single-agent reinforcement learning for training collaborative or competitive agents
   in complex environments. 
 %
-MARL introduces unique challenges, such as non-stationarity, partial observability, 
-  and credit assignment that complicate the learning process.  
+MADRL, however, introduces unique challenges, such as non-stationarity, partial observability, 
+  and credit assignment that complicate the learning process.
 %
 Typically, in the literature, centralized training methods are used to tackle some of these challenges, 
   although they often face scalability limitations as the number of agents grows.
@@ -112,10 +112,10 @@ For this reason, decentralized training techniques have been proposed, however,
   generally they have a longer convergence time compared to centralized ones 
   and may lead to instability.
 %
-This paper investigates the effectiveness of various neighbor-based decentralized training strategies 
+This paper investigates the effectiveness of various neighbor-based decentralized training strategies based on the well-known deep-q learning algorithm 
   as a viable alternative to centralized training. 
 %  
-We evaluate Experience Sharing, Nearest Neighboring Averaging, and Nearest Neighboring Consensus methods 
+We evaluate experience sharing, nearest neighboring averaging, and nearest neighboring consensus methods 
   in a custom multi-agent environment and compare their performance against centralized training. 
 %  
 Our results show that neighbor-based methods can achieve comparable performance to centralized training 
@@ -136,7 +136,7 @@ Our results show that neighbor-based methods can achieve comparable performance 
  <concept>
   <concept_id>10010520.10010575.10010755</concept_id>
   <concept_desc>Computer systems organization~Redundancy</concept_desc>
-  <concept_significance>300</concept_significance>
+  <concept_significance>300</concept_sigagentnificance>
  </concept>
  <concept>
   <concept_id>10010520.10010553.10010554</concept_id>
@@ -192,8 +192,9 @@ Many prominent approaches in this field employ a centralized training and decent
  as exemplified by limited sensing ranges in swarm robotics or localized interactions.  
  This observation also holds true in other natural systems, such as animal herds.
 
+
 Therefore, 
-this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information. 
+this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information---in this research area is typically referred to as \emph{networked agents}.
 This approach aims to: 
 \begin{itemize}
   \item incorporate richer information compared to independent learners, and
@@ -216,7 +217,76 @@ comparing the performance of the neighboring-based methods against centralized t
 Finally, Section~\ref{sec:conclusion} concludes the paper,
 summarizing the key findings and outlining potential future research directions.
 
-\section{Background}\label{sec:background}
+\section{Background and Motivation}\label{sec:background}
+Multi-agent reinforcement learning is an extension of a sequientail decision-making process, 
+where multiple agents interact with each other and the environment.
+In particular, each agent in the system aims to maximize its own reward,
+which is typically a function of the global state (sometime not known, aka partial observable) and the joint action taken by all agents.
+%
+In doing that, each agent perceive the environment through its own observation function,
+which maps the global state to the agent's local observation and perform an action based on its policy.
+%
+This action is then combined with the actions of other agents to form a joint action,
+which is used to update the global state and reward.
+
+MADRL is a subfield of reinforcement learning that focuses on training multiple agents to interact with each other within a shared environment.
+%
+In this \emph{deep} variant, agents are typically represented by neural networks that learn to maximize a shared (or individual) reward signal.
+% 
+%
+MADRL is a wide area, and it encompassed a variety of scenarios, 
+such as cooperative (e.g., multi-agent pathfinding), 
+competitive (e.g., multi-agent games), 
+and mixed environments.
+%
+In this paper, we focus on cooperative scenarios, where agents must collaborate to achieve a common goal,
+introducing a common formalization (networked agents) and discussing the key concepts of joint action space, shared reward, partial observability, and credit assignment, following by different training schemes (centralized and distributed), with a discussion on the state of the art and motivation for our work.
+\subsection{Formalization}
+Since MARL is a broad field, it is essential to provide a formalization to guide the discussion.
+In this paper, we consider a partially observable networked multi-agent system (PONMAS) as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where:
+$\mathcal{G} = (N, E)$ is a communication graph, where $N = {1, \dots, n}$ is the set of $n$ agents and $E \subseteq N \times N$ represents the communication links between agents. Time-varying graphs $\mathcal{G}_t = (N, E_t)$ can be used to represent communication evolving over time $t$.
+%
+$\mathcal{S}$ is the global state space.
+%
+$\mathcal{A} = \mathcal{A}^1 \times \dots \times \mathcal{A}^n$ is the joint action space, where $\mathcal{A}^i$ is the action space of agent $i$.
+%
+$\mathcal{O} = \mathcal{O}^1 \times \dots \times \mathcal{O}^n$ is the joint observation space, where $\mathcal{O}^i$ is the observation space for agent $i$. 
+%
+Observations $o^i \in \mathcal{O}^i$ provide partial information about the global state.
+$\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$ is the state transition function, describing the probability of transitioning to a new state $s' \in \mathcal{S}$ given the current state $s \in \mathcal{S}$ and joint action $a \in \mathcal{A}$.
+%
+$\mathcal{R} = {\mathcal{R}^i}_{i \in N}$, where $\mathcal{R}^i: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$ is the reward function for agent $i$.
+%
+$\gamma \in [0, 1]$ is the discount factor.
+%
+Each agent $i$ at time $t$ receives an observation $o^i_t \in \mathcal{O}^i$, takes an action $a^i_t \in \mathcal{A}^i$ based on its local policy $\pi^i: \mathcal{O}^i \times \mathcal{A}^i \to [0,1]$, and receives a reward $r^i_{t+1} = \mathcal{R}^i(s_t, a_t)$. 
+%
+The global state evolves according to $\mathcal{P}$. 
+Agents can exchange information with their neighbors in $\mathcal{G}$ (or $\mathcal{G}t$ if the graph is time-varying). 
+%
+The objective is typically to maximize the expected discounted sum of rewards $\sum{t=0}^{\infty} \gamma^t r^i_t$ for each agent $i$, 
+or some global reward function like the average reward over all agents.
+Formally, it can be defined as:
+\[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
+
+In doing this, agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function or Q-value. 
+The latter represents the expected cumulative discounted reward the agent will receive by taking action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and then following its policy $\pi^i$:
+
+\[ Q^i(s, a) = \mathbb{E}_{\pi^i} \left[ \sum_{t=0}^{\infty} \gamma^t r^i_{t+1} | s_0 = s, a_0 = a \right] \]
+
+Similar to the individual reward function, a global average reward function can be defined as $\bar{\mathcal{R}}(s, a) = \frac{1}{n} \sum_{i=1}^n \mathcal{R}^i(s,a)$, leading to a global average Q-value:
+
+\[ \bar{Q}(s, a) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{\infty} \gamma^t \bar{\mathcal{R}}(s_t, a_t) | s_0 = s, a_0 = a \right] \]
+
+where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy.  The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
+%\subsection{Key Concepts}
+
+\subsection{Training Schemes}
+
+\subsection{State of the Art}
+
+\subsection{Motivation}
+
 \begin{itemize}
 \item Introduce Multi-Agent Reinforcement Learning (MARL) and its specific challenges.
 \item Provide a formalization (networked agents?) and explain the key concepts: joint action space, shared reward, partial observability, and credit assignment.
