@@ -343,8 +343,24 @@ While initially developed for tabular settings, some of these methods, like hyst
 However, these independent approaches, even with deep learning, often exhibit instability and slow convergence in complex environments and fundamentally lack explicit mechanisms for inter-agent coordination. 
 Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
 \paragraph{Neighboring-Based Methods}
-\paragraph{Centralized Actor-Critic Methods}
+Neighboring-based methods in MARL address the scalability and communication overhead challenges of fully centralized approaches by restricting agent interactions to a local neighborhood. 
+This introduces a structure where agents communicate and coordinate with a limited set of neighbors, reducing the complexity of joint action and policy learning.
+%
+One prominent category within neighboring-based methods is consensus-based algorithms. 
+These algorithms aim to reach a consensus among agents on shared values or policies through local information exchange. 
+Early work like QD-learning~\cite{kar2012qd} extends Q-learning with a consensus update term, 
+enabling agents to converge towards optimal Q-values despite only receiving local rewards.
+%  
+Recent advances in consensus-based MARL leverage deep learning and actor-critic architectures, 
+combining local policy updates with consensus updates on critic parameters or gradients, 
+as seen in the recent works~\cite{7434032,pennesi2010distributed,zhang2018fully,DBLP:journals/jmlr/CiosekW20}.
 
+These algorithms often exhibit improved scalability and communication efficiency compared to fully centralized methods, 
+but still need lack in capturing the global structure of the environment and the interactions between agents.
+\paragraph{Centralized Actor-Critic Methods}
+\gianlu{
+  todo -- discuss the main three solution, policy based (MAPPO, MADDPG, etc.), value based (QMIX, VDQN, etc.) and mean field (mean-q learning with field-informed RL).
+}
 \subsection{Motivation}
 MADRL faces a critical challenge in balancing scalability and performance.  
 Centralized training methods, while effective, often suffer from computational bottlenecks and difficulties scaling to large numbers of agents. 
