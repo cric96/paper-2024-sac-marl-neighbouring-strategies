@@ -164,15 +164,18 @@ Our results show that neighbor-based methods can achieve comparable performance 
 
 \section{Introduction}
 The increasing complexity of real-world systems, from robotic swarms to smart grids, demands intelligent control strategies capable of adapting to dynamic and often unpredictable environments.
-In this direction, reinforcement learning (RL) has emerged as a powerful paradigm for training agents to interact with their environment and learn optimal policies through trial and error.
 %
-Moving beyond single-agent settings, multi-agent reinforcement learning (MARL) extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
+In this direction, reinforcement learning (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents to interact with their environment and learn optimal policies through trial and error.
 %
-Recent advances in deep learning have further revolutionized the field, enabling the training of complex policies in high-dimensional state and action spaces, leading to the emergence of multi-agent deep reinforcement learning (MADRL).
+Moving beyond single-agent settings, multi-agent reinforcement learning (MARL)~\cite{bucsoniu2010multi} extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
+%
+Recent advances in deep learning have further revolutionized the field, 
+enabling the training of complex policies in high-dimensional state and action spaces, 
+leading to the emergence of multi-agent deep reinforcement learning (MADRL)~\cite{gronauer2022multi}.
 %
 MADRL has gained significant traction due to its flexibility and capacity to learn diverse behaviors, 
-ranging from cooperative to competitive, 
-as demonstrated in various case studies involving video games, robotics,
+ranging from cooperative~\cite{gupta2017cooperative} to competitive~\cite{tampuu2017multiagent}, 
+as demonstrated in various case studies involving video games~\cite{shao2019survey}, robotics~\cite{orr2023multi},
 and traffic management. 
 %
 This paper focuses on the subdomain of cooperative multi-agent reinforcement learning, 
