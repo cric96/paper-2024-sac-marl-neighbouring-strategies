@@ -274,7 +274,7 @@ The latter represents the expected cumulative discounted reward the agent will r
 %The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
 There are several algorithms which try to find the optimal Q-value function, one of the most popular is the deep Q-learning algorithm.
 \subsubsection{Deep Q-Learning Formalization}
-deep Q-learning utilizes a deep neural network, 
+Deep Q-learning~\cite{DBLP:conf/l4dc/FanWXY20} utilizes a deep neural network, 
 often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
 This network takes the state $s$ as input and outputs a vector of Q-values, one for each possible action $a \in \mathcal{A}$.  
 The optimal action-value function, denoted $Q^*(s, a)$, satisfies the Bellman optimality equation:
@@ -291,7 +291,7 @@ and $\mathcal{D}$ is the experience replay buffer, a collection of past experien
 %
 In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
 For centralized training, the global state $s$ can be used as input. 
-The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., independent Q-learning, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
+The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed deep Q-learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
 For example, in independent deep Q-learning, each agent updates its Q-network independently using its local reward $r^i$:
 \begin{equation}
   \resizebox{\linewidth}{!}{$
