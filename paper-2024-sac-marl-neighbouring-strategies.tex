@@ -4,6 +4,8 @@
 \usepackage{graphicx}
 \usepackage{autobreak}
 \usepackage{mytodonotes}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{cleveref}
 
 % Copyright
 %\setcopyright{none}
@@ -301,8 +303,15 @@ For example, in independent deep Q-learning, each agent updates its Q-network in
 %\subsection{Key Concepts}
 
 \subsection{Learning Schemes}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.49\linewidth]{figures/learning-scheme-ctde.pdf}
+  \includegraphics[width=0.49\linewidth]{figures/learning-scheme-dtde.pdf}
+  \caption{Graphical rap presentation of centralized training with decentralized execution (left) and decentralized training with decentralized execution (rigth) in multi-agent reinforcement learning.}
+  \label{fig:learning_paradigms}
+\end{figure}
 Multi-agent learning can be categorized based on the training scheme and the information accessibility for agents. 
-Two prominent paradigms are centralized training with decentralized execution (CTDE) and decentralized training with decentralized execution (DTDE).
+Two prominent paradigms are centralized training with decentralized execution (CTDE) and decentralized training with decentralized execution (DTDE)---see \Cref{fig:learning_paradigms}.
 
 \paragraph{Centralized Training with Decentralized Execution (CTDE)}
 In CTDE, a central learner trains all agents, 
