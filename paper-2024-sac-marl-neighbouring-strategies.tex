@@ -221,51 +221,40 @@ Finally, Section~\ref{sec:conclusion} concludes the paper,
 summarizing the key findings and outlining potential future research directions.
 
 \section{Background and Motivation}\label{sec:background}
-Multi-agent reinforcement learning is an extension of a sequientail decision-making process, 
-where multiple agents interact with each other and the environment.
-In particular, each agent in the system aims to maximize its own reward,
-which is typically a function of the global state (sometime not known, aka partial observable) and the joint action taken by all agents.
+MARL is an extension of a sequential decision-making process, 
+where multiple \emph{agents} interact with each other and a shared \emph{environment}.
+In particular, each agent in the system aims to maximize its own \emph{reward signal} (i.e., a scalar feedback signal),
+which is typically a function of the global state (sometime not known, making the system \emph{partial observable}) and the joint action taken by all agents.
 %
-In doing that, each agent perceive the environment through its own observation function,
-which maps the global state to the agent's local observation and perform an action based on its policy.
+In doing that, each agent perceive the environment through its own \emph{observation function},
+which maps the global state to the agent's local observation and perform an action based on its \emph{policy} (i.e., a mapping from observations to actions).
 %
-This action is then combined with the actions of other agents to form a joint action,
+This chosen action is then combined with the actions of other agents forming a \emph{joint action},
 which is used to update the global state and reward.
-
-MADRL is a subfield of reinforcement learning that focuses on training multiple agents to interact with each other within a shared environment.
-%
-In this \emph{deep} variant, agents are typically represented by neural networks that learn to maximize a shared (or individual) reward signal.
-% 
-%
-MADRL is a wide area, and it encompassed a variety of scenarios, 
-such as cooperative (e.g., multi-agent pathfinding), 
-competitive (e.g., multi-agent games), 
-and mixed environments.
-%
-In this paper, we focus on cooperative scenarios, where agents must collaborate to achieve a common goal,
-introducing a common formalization (networked agents) and discussing the key concepts of joint action space, shared reward, partial observability, and credit assignment, following by different training schemes (centralized and distributed), with a discussion on the state of the art and motivation for our work.
+ 
+In this paper, we focus on cooperative MADRL scenarios (so the deep version of MARL), 
+where agents must collaborate to achieve a common goal.
+In the following, we provide an overview of the key concepts in MADRL, 
+including the formalization of the problem, the deep Q-learning algorithm, and the training paradigms used in the literature.
 \subsection{Formalization}
-Since MARL is a broad field, it is essential to provide a formalization to guide the discussion.
-In this paper, we consider a partially observable networked multi-agent system (PONMAS) as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where:
-$\mathcal{G} = (N, E)$ is a communication graph, where $N = {1, \dots, n}$ is the set of $n$ agents and $E \subseteq N \times N$ represents the communication links between agents. Time-varying graphs $\mathcal{G}_t = (N, E_t)$ can be used to represent communication evolving over time $t$.
-%
-$\mathcal{S}$ is the global state space.
-%
-$\mathcal{A} = \mathcal{A}^1 \times \dots \times \mathcal{A}^n$ is the joint action space, where $\mathcal{A}^i$ is the action space of agent $i$.
-%
-$\mathcal{O} = \mathcal{O}^1 \times \dots \times \mathcal{O}^n$ is the joint observation space, where $\mathcal{O}^i$ is the observation space for agent $i$. 
-%
-Observations $o^i \in \mathcal{O}^i$ provide partial information about the global state.
-$\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$ is the state transition function, describing the probability of transitioning to a new state $s' \in \mathcal{S}$ given the current state $s \in \mathcal{S}$ and joint action $a \in \mathcal{A}$.
-%
-$\mathcal{R} = {\mathcal{R}^i}_{i \in N}$, where $\mathcal{R}^i: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$ is the reward function for agent $i$.
-%
-$\gamma \in [0, 1]$ is the discount factor.
-%
-Each agent $i$ at time $t$ receives an observation $o^i_t \in \mathcal{O}^i$, takes an action $a^i_t \in \mathcal{A}^i$ based on its local policy $\pi^i: \mathcal{O}^i \times \mathcal{A}^i \to [0,1]$, and receives a reward $r^i_{t+1} = \mathcal{R}^i(s_t, a_t)$. 
+Since MADRL is a broad field, it is essential to provide a formalization to guide the discussion.
+In this paper, we consider partially observable networked markov decision process (PONMDP)~\cite{DBLP:journals/tac/AdlakhaLG12} as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where
+
+\begin{itemize}
+  \item $\mathcal{G} = (N, E)$ is a communication graph, where $N$ is the set of $n$ agents and $E \subseteq N \times N$ represents the communication links between agents. Time-varying graphs $\mathcal{G}_t = (N, E_t)$ can be used to represent communication evolving over time $t$.
+  \item $\mathcal{S}$ is the global state space.
+  \item $\mathcal{A} = \mathcal{A}^1 \times \dots \times \mathcal{A}^n$ is the joint action space, where $\mathcal{A}^i$ is the action space of agent $i$.
+  \item $\mathcal{O} = \mathcal{O}^1 \times \dots \times \mathcal{O}^n$ is the joint observation space, where $\mathcal{O}^i$ is the observation space for agent $i$.
+  \item $\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$ is the state transition function, describing the probability of transitioning to a new state $s' \in \mathcal{S}$ given the current state $s \in \mathcal{S}$ and joint action $a \in \mathcal{A}$.
+  \item $\mathcal{R} = {\mathcal{R}^i}_{i \in N}$, where $\mathcal{R}^i: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$ is the reward function for agent $i$.
+  \item $\gamma \in [0, 1]$ is the discount factor.
+\end{itemize}
+Each agent $i$ at time $t$ receives an observation $o^i_t \in \mathcal{O}^i$, 
+takes an action $a^i_t \in \mathcal{A}^i$ based on its local policy $\pi^i: \mathcal{O}^i \times \mathcal{A}^i \to [0,1]$, and receives a reward $r^i_{t+1} = \mathcal{R}^i(s_t, a_t)$. 
 %
 The global state evolves according to $\mathcal{P}$. 
-Agents can exchange information with their neighbors in $\mathcal{G}$ (or $\mathcal{G}t$ if the graph is time-varying). 
+Agents can exchange information with their neighbors in $\mathcal{G}$ 
+(or $\mathcal{G}t$ if the graph is time-varying). 
 %
 The objective is typically to maximize the expected discounted sum of rewards $\sum{t=0}^{\infty} \gamma^t r^i_t$ for each agent $i$, 
 or some global reward function like the average reward over all agents.
@@ -277,15 +266,15 @@ The latter represents the expected cumulative discounted reward the agent will r
 
 \[ Q^i(s, a) = \mathbb{E}_{\pi^i} \left[ \sum_{t=0}^{\infty} \gamma^t r^i_{t+1} | s_0 = s, a_0 = a \right] \]
 
-Similar to the individual reward function, a global average reward function can be defined as $\bar{\mathcal{R}}(s, a) = \frac{1}{n} \sum_{i=1}^n \mathcal{R}^i(s,a)$, leading to a global average Q-value:
+%Similar to the individual reward function, a global average reward function can be defined as $\bar{\mathcal{R}}(s, a) = \frac{1}{n} \sum_{i=1}^n \mathcal{R}^i(s,a)$, leading to a global average Q-value:
 
-\[ \bar{Q}(s, a) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{\infty} \gamma^t \bar{\mathcal{R}}(s_t, a_t) | s_0 = s, a_0 = a \right] \]
+%\[ \bar{Q}(s, a) = \mathbb{E}_{\pi} \left[ \sum_{t=0}^{\infty} \gamma^t \bar{\mathcal{R}}(s_t, a_t) | s_0 = s, a_0 = a \right] \]
 
-where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy. 
-The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
-There are several algorithms which try to find the optimal Q-value function, one of the most popular is the deep q-learning algorithm.
+%where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy. 
+%The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
+There are several algorithms which try to find the optimal Q-value function, one of the most popular is the deep Q-learning algorithm.
 \subsubsection{Deep Q-Learning Formalization}
-deep q-learning utilizes a deep neural network, 
+deep Q-learning utilizes a deep neural network, 
 often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
 This network takes the state $s$ as input and outputs a vector of Q-values, one for each possible action $a \in \mathcal{A}$.  
 The optimal action-value function, denoted $Q^*(s, a)$, satisfies the Bellman optimality equation:
@@ -302,7 +291,7 @@ and $\mathcal{D}$ is the experience replay buffer, a collection of past experien
 %
 In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
 For centralized training, the global state $s$ can be used as input. 
-The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., independent Q-learning, value decomposition methods).  
+The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., independent Q-learning, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
 For example, in independent deep Q-learning, each agent updates its Q-network independently using its local reward $r^i$:
 \begin{equation}
   \resizebox{\linewidth}{!}{$
