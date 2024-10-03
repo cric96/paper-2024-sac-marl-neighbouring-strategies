@@ -446,7 +446,7 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
   \label{alg:neighbor_dqn}
   \ForEach{agent $i \in N$}{
       Initialize Q-network $Q^i(o^i, a^i; \theta^i)$ and target network $Q^{i-}(o^i, a^i; \theta^{i-})$\\
-      Initialize replay buffer $\mathcal{B}^i$
+      Initialize replay buffer $\mathcal{D}^i$
   }
   \For{episode = 1 to M}{
       \ForEach{agent $i \in N$}{
@@ -456,8 +456,8 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
           \ForEach{agent $i \in N$}{
               Select action $a_t^i$ based on $\epsilon$-greedy policy using $Q^i(o_t^i, a^i; \theta^i)$\\
               Execute action $a_t^i$ and observe reward $r_{t+1}^i$ and next observation $o_{t+1}^i$\\
-              Store $(o_t^i, a_t^i, r_{t+1}^i, o_{t+1}^i)$ in $\mathcal{B}^i$\\
-              Sample a mini-batch from $\mathcal{B}^i$\\
+              Store $(o_t^i, a_t^i, r_{t+1}^i, o_{t+1}^i)$ in $\mathcal{D}^i$\\
+              Sample a mini-batch from $\mathcal{D}^i$\\
               Calculate target values using chosen neighboring strategy (see below)\\
               Update $\theta^i$ by minimizing the TD error\\
               Every C steps, update target network $\theta^{i-} \leftarrow \theta^i$\\
