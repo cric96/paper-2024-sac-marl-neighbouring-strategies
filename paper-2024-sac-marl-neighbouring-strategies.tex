@@ -5,6 +5,7 @@
 \usepackage{autobreak}
 \usepackage{mytodonotes}
 \usepackage{subcaption}
+\usepackage[inline]{enumitem}
 \usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{cleveref}
@@ -484,9 +485,24 @@ This environment consists of a 2D euclidean space in which a variable number of 
 %
 The goal of the agents is to cooperate to collect all the items in the smallest amount of time possible. 
 %
-% Action space
+In particular, each agent has an observation space defined by three main parameters, namely: 
+\begin{enumerate*}[label=(\roman*)]
+  \item number of closest agents that the agent is able to see (thus, forming a neighborhood);
+  \item number of closest items that the agent is able to see;
+  \item memory of past states, thus encoding also temporal information, helping each agent to understand 
+    the evolution of the environment.
+\end{enumerate*} 
 %
-% Obseration space
+Regarding the action space, each agent has $8$ possible moves, namely the possible direction on a grid 
+  (up, down and diagonal).
+
+% Reward 
+
+
+
+% Specify the chosen RL algorithm (DQN) and its hyperparameter configuration
+
+% Define the evaluation metrics: average episode length and average reward
 
 \begin{figure}
   \centering
@@ -499,18 +515,14 @@ The goal of the agents is to cooperate to collect all the items in the smallest 
   \label{fig:env}
 \end{figure}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/behavior.pdf}
+  \caption{TODO
+  }
+  \label{fig:behavior}
+\end{figure}
 
-% \begin{itemize}
-% \item Introduce the custom "collect the items" multi-agent environment:
-% \begin{itemize}
-% \item Describe the environment's dynamics, agent goals, and challenges.
-% \item Specify the action space (continuous and discrete) and observation space design.
-% \item Explain the reward structure, emphasizing the components that encourage cooperation.
-% \end{itemize}
-% \item Detail the implementation framework (Gymnasium, RLlib, PyTorch).
-% \item Specify the chosen RL algorithm (DQN) and its hyperparameter configuration.
-% \item Define the evaluation metrics: average episode length and average reward.
-% \end{itemize}
 
 \section{Results and Evaluation}\label{sec:results}
 \begin{itemize}
