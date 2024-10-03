@@ -164,7 +164,7 @@ a particularly active and impactful area of research within MADRL~\cite{oroojloo
 
 \sloppy
 Many prominent approaches in this field employ a centralized training and decentralized execution paradigm
- (e.g., COMA~\cite{foerster2018counterfactual}, MAPPO~\cite{yu2022surprising}, MADDPG~\cite{DBLP:conf/nips/LoweWTHAM17}, QMIX~\cite{DBLP:conf/icml/RashidSWFFW18}, QTRAN~\cite{DBLP:conf/icml/SonKKHY19}), 
+ (e.g.,MAPPO~\cite{yu2022surprising}, MADDPG~\cite{DBLP:conf/nips/LoweWTHAM17}, QMIX~\cite{DBLP:conf/icml/RashidSWFFW18}, QTRAN~\cite{DBLP:conf/icml/SonKKHY19}), 
  where a centralized learner trains distributed policies that are subsequently executed independently. 
  While facilitating decentralized runtime operation and avoiding single points of failure, 
  this approach typically entails an offline learning phase (using simulators and centralized computation) 
@@ -364,6 +364,32 @@ but still need lack in capturing the global structure of the environment and the
 \gianlu{
   todo -- discuss the main three solution, policy based (MAPPO, MADDPG, etc.), value based (QMIX, VDQN, etc.) and mean field (mean-q learning with field-informed RL).
 }
+\paragraph{Centralized Actor-Critic Methods} CTDE is a prominent paradigm in MARL~\cite{ning2024survey}, 
+leveraging centralized information during training to learn decentralized policies for execution. 
+This approach addresses the challenges of partial observability and non-stationarity while maintaining the scalability of decentralized execution. % 
+Actor-critic methods are well-suited for the CTDE paradigm, 
+where a centralized critic provides feedback to decentralized actors~\cite{DBLP:conf/icml/RashidSWFFW18,DBLP:journals/corr/SunehagLGCZJLSL17,yu2022surprising,DBLP:conf/nips/LoweWTHAM17}. 
+% 
+The most influential algorithms in this area are the one called policy-based methods (i.e., the ones that learn a policy directly).
+%
+Multi-agent deep deterministic policy Gradient (MADDPG)~\cite{DBLP:conf/nips/LoweWTHAM17} employs a centralized critic that has access to the states and actions of all agents, providing more informative feedback for policy updates. 
+Each agent then learns a deterministic policy based on its local observations. % 
+Building on the actor-critic framework, Multi-Agent Proximal Policy Optimization (MAPPO)~\cite{yu2022surprising} extends the centralized critic concept to the policy optimization setting. 
+MAPPO leverages a centralized critic to estimate advantage functions for policy updates, while individual agents learn stochastic policies. 
+This approach has shown promising results in various cooperative and competitive MARL tasks, exhibiting improved sample efficiency and robustness compared to MADDPG. % 
+Another class of algorithms, called value-based methods, learn a value function that estimates the expected return for each agent.
+%
+Value Decomposition Networks (VDN)~\cite{DBLP:journals/corr/SunehagLGCZJLSL17} and QMIX~\cite{DBLP:conf/icml/RashidSWFFW18} are representative algorithms in this category. 
+VDN factorizes the joint Q-function into a sum of individual agent Q-functions, simplifying the learning process. 
+QMIX improves upon VDN by learning a monotonic mixing function that combines individual Q-values, 
+allowing for more complex representations of joint action values. % 
+
+Another approach to address the scalability challenge in MARL is \emph{mean field reinforcement learning}, i.e., the one that models the interaction between agents through a mean field, simplifying the multi-agent problem into a single-agent problem against an average opponent.
+%
+In this context, mean field q-learning (Mean-Q)~\cite{DBLP:conf/icml/YangLLZZW18} has been proposed.
+This approach scales well to large numbers of agents and has been successful in various applications. 
+% 
+There are also modern solution which leverages collective abstraction to reduce the complexity of the problem, such as the one proposed in field-informed reinforcement learning.
 \subsection{Motivation}
 MADRL faces a critical challenge in balancing scalability and performance.  
 Centralized training methods, while effective, often suffer from computational bottlenecks and difficulties scaling to large numbers of agents. 
