@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{autobreak}
 \usepackage{mytodonotes}
+\usepackage{subcaption}
 \usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{cleveref}
@@ -467,19 +468,49 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
       }
   }
 \end{algorithm}
-
 \section{Experimental Setup}\label{sec:experiments}
-\begin{itemize}
-\item Introduce the custom "collect the items" multi-agent environment:
-\begin{itemize}
-\item Describe the environment's dynamics, agent goals, and challenges.
-\item Specify the action space (continuous and discrete) and observation space design.
-\item Explain the reward structure, emphasizing the components that encourage cooperation.
-\end{itemize}
-\item Detail the implementation framework (Gymnasium, RLlib, PyTorch).
-\item Specify the chosen RL algorithm (DQN) and its hyperparameter configuration.
-\item Define the evaluation metrics: average episode length and average reward.
-\end{itemize}
+
+To validate our approach, we developed a custom learning scenario using three State-of-the-Art frameworks 
+  in Reinforcement Learning and Deep Learning, namely: \emph{Ray}~\cite{DBLP:conf/osdi/MoritzNWTLLEYPJ18} 
+  (in particular, its module \emph{RLlib}~\cite{DBLP:conf/icml/LiangLNMFGGJS18}),
+  \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
+  and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
+
+First, we extended the \texttt{MultiAgentEnv} from RLlib to implement a custom cooperative environment 
+  called \emph{collect the items} -- see \Cref{fig:env}.
+%
+This environment consists of a 2D euclidean space in which a variable number of \emph{items} and \emph{agents} 
+ are randomly placed.
+%
+The goal of the agents is to cooperate to collect all the items in the smallest amount of time possible. 
+%
+% Action space
+%
+% Obseration space
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/env.pdf}
+  \caption{Graphical representation of the environment. 
+  Specifically, the environment consists of a 2D euclidean space.
+  The blue dots represent the agents, while the yellow stars represent the items that 
+  the agents aim to collect.
+  }
+  \label{fig:env}
+\end{figure}
+
+
+% \begin{itemize}
+% \item Introduce the custom "collect the items" multi-agent environment:
+% \begin{itemize}
+% \item Describe the environment's dynamics, agent goals, and challenges.
+% \item Specify the action space (continuous and discrete) and observation space design.
+% \item Explain the reward structure, emphasizing the components that encourage cooperation.
+% \end{itemize}
+% \item Detail the implementation framework (Gymnasium, RLlib, PyTorch).
+% \item Specify the chosen RL algorithm (DQN) and its hyperparameter configuration.
+% \item Define the evaluation metrics: average episode length and average reward.
+% \end{itemize}
 
 \section{Results and Evaluation}\label{sec:results}
 \begin{itemize}
@@ -503,6 +534,40 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
 \item Mention potential techniques for reducing communication overhead.
 \end{itemize}
 \end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/episode_reward_mean.pdf}
+  \includegraphics[width=1\linewidth]{figures/episode_len_mean.pdf}
+  \caption{Training results...}
+  \label{fig:results}
+\end{figure}
+
+\begin{figure*}[htb]
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/mean-time-comparison-8-agents.pdf}
+      %\caption{Start of the simulation.}
+      % \label{fig:zones1}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/mean-time-comparison-16-agents.pdf}
+      %\caption{After k time steps of the simulation.}
+      % \label{fig:zones2}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figures/mean-time-comparison-32-agents.pdf}
+      %\caption{End of the simulation.}
+      % \label{fig:zones3}
+  \end{subfigure}
+  \caption{ To-do
+  }
+  \label{fig:time-eval}
+\end{figure*}
+
 
 \section{Conclusion}\label{sec:conclusion}
 \begin{itemize}
