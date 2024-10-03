@@ -80,19 +80,14 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-Multi-agent deep reinforcement learning (MADRL) is gaining popularity as a powerful extension of
-  single-agent reinforcement learning for training collaborative or competitive agents
-  in complex environments. 
+Multi-agent deep reinforcement learning (MADRL) is rapidly emerging as a powerful extension of single-agent reinforcement learning, 
+enabling the training of both collaborative and competitive agents in complex environments. 
 %
-MADRL, however, introduces unique challenges, such as non-stationarity, partial observability, 
-  and credit assignment that complicate the learning process.
+The most widely adopted training paradigm in MADRL is centralized training with decentralized execution (CTDE), which has demonstrated significant effectiveness. 
 %
-Typically, in the literature, centralized training methods are used to tackle some of these challenges, 
-  although they often face scalability limitations as the number of agents grows.
+However, it relies on a centralized learner, requiring agents to learn in an offline setting and execute online. To address this limitation, decentralized training methods have been introduced. 
 %
-For this reason, decentralized training techniques have been proposed, however, 
-  generally they have a longer convergence time compared to centralized ones 
-  and may lead to instability.
+While these techniques offer greater flexibility, they tend to have slower convergence and can suffer from instability compared to centralized approaches.
 %
 This paper investigates the effectiveness of various neighbor-based decentralized training strategies based 
   on the well-known Deep-Q Learning algorithm as a viable alternative to centralized training. 
