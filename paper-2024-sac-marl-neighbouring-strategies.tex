@@ -82,7 +82,7 @@
 
 \begin{abstract}
 Multi-agent deep reinforcement learning (MADRL) is rapidly emerging as a powerful extension of single-agent reinforcement learning, 
-enabling the training of both collaborative and competitive agents in complex environments. 
+enabling the training of both collaborative and competitive agents in several domains, like robotics, traffic management, and video games.
 %
 The most widely adopted training paradigm in MADRL is centralized training with decentralized execution (CTDE), which has demonstrated significant effectiveness. 
 %
@@ -93,7 +93,7 @@ While these techniques offer greater flexibility, they tend to have slower conve
 This paper investigates the effectiveness of various neighbor-based decentralized training strategies based 
   on the well-known Deep-Q Learning algorithm as a viable alternative to centralized training. 
 %  
-We evaluate experience sharing, nearest neighboring averaging, and nearest neighboring consensus methods 
+We evaluate experience sharing, k-nearest neighboring averaging, and k-nearest neighboring consensus methods 
   in a custom multi-agent environment and compare their performance against centralized training
   and totally decentralized training. 
 %  
@@ -142,18 +142,18 @@ Our results show that neighbor-based methods can achieve comparable performance 
 \section{Introduction}
 The increasing complexity of real-world systems, from robotic swarms to smart grids, demands intelligent control strategies capable of adapting to dynamic and often unpredictable environments.
 %
-In this direction, \emph{reinforcement learning} (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents to interact with their environment and learn optimal policies through trial and error.
+In this direction, \emph{reinforcement learning} (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents that interact with their environment and learn optimal policies through trial and error.
 %
 Moving beyond single-agent settings, \emph{multi-agent reinforcement learning} (MARL)~\cite{bucsoniu2010multi} extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
 %
-Recent advances in deep learning have further revolutionized the field, 
+Recent advances in deep learning have further advanced the field, 
 enabling the training of complex policies in high-dimensional state and action spaces, 
 leading to the emergence of \emph{multi-agent deep reinforcement learning} (MADRL)~\cite{gronauer2022multi}.
 %
 MADRL has gained significant traction due to its flexibility and capacity to learn diverse behaviors, 
 ranging from cooperative~\cite{gupta2017cooperative} to competitive~\cite{tampuu2017multiagent}, 
 as demonstrated in various case studies involving video games~\cite{shao2019survey}, robotics~\cite{orr2023multi},
-and traffic management. 
+and traffic management~\cite{chu2019multi}. 
 %
 This paper focuses on the subdomain of \emph{cooperative multi-agent reinforcement learning}, 
 a particularly active and impactful area of research within MADRL~\cite{oroojlooy2023review}.
@@ -162,21 +162,17 @@ a particularly active and impactful area of research within MADRL~\cite{oroojloo
 Many prominent approaches in this field employ a centralized training and decentralized execution paradigm
  (e.g.,MAPPO~\cite{yu2022surprising}, MADDPG~\cite{DBLP:conf/nips/LoweWTHAM17}, QMIX~\cite{DBLP:conf/icml/RashidSWFFW18}, QTRAN~\cite{DBLP:conf/icml/SonKKHY19}), 
  where a centralized learner trains distributed policies that are subsequently executed independently. 
- While facilitating decentralized runtime operation and avoiding single points of failure, 
+%
+While facilitating decentralized runtime operation and avoiding single points of failure, 
  this approach typically entails an offline learning phase (using simulators and centralized computation) 
  followed by online execution with no further learning. 
- This inherent limitation hinders adaptation to changing environments or tasks at runtime.  
+ This inherent limitation hinders adaptation to changing environments or tasks at runtime, like those encountered in real-world robotics applications.  
 % 
 While fully independent learners~\cite{abed2016comparison} offer a potential solution for online learning,
  they often underperform centralized counterparts due to instability in training and a lack of differentiation between agents and their interactions with the environment. 
 %
-However, in many real-world multi-agent systems, 
- agents only interact with a limited subset of the overall system (also called \emph{networked agents}),
- as exemplified by limited sensing ranges in swarm robotics or localized interactions.  
- This observation also holds true in other natural systems, such as animal herds.
-%
-Therefore, 
-this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information.
+Inspired by many real-world multi-agent systems in which 
+ agents only interact with a limited subset of the overall system (also called \emph{networked agents})--as exemplified by limited sensing ranges in swarm robotics or localized interactions--in this paper proposes and formalizes a family of distributed learning methodologies based on neighborhood information.
 This approach aims to: 
 i) incorporate richer information compared to independent learners, and
 ii) facilitate the emergence of collective behaviors through local interactions between networked agents.
@@ -187,14 +183,14 @@ We demonstrate the effectiveness of these strategies in comparison to both centr
 highlighting how neighborhood-based policies offer a compelling compromise between these two extremes.
 
 The remainder of this paper is structured as follows.
-Section~\ref{sec:background} provides an overview of multi-agent reinforcement learning,
+\Cref{sec:background} provides an overview of multi-agent reinforcement learning,
 highlighting the key challenges and training paradigms.
-Section~\ref{sec:neighboring} introduces the proposed neighboring-based training strategies,
+\Cref{sec:neighboring} introduces the proposed neighboring-based training strategies,
 detailing their implementation and operation.
-Section~\ref{sec:experiments} presents the experimental setup and evaluation metrics.
-Section~\ref{sec:results} discusses the results of the experiments,
+\Cref{sec:experiments} presents the experimental setup and evaluation metrics.
+\Cref{sec:results} discusses the results of the experiments,
 comparing the performance of the neighboring-based methods against centralized training.
-Finally, Section~\ref{sec:conclusion} concludes the paper,
+Finally, \Cref{sec:conclusion} concludes the paper,
 summarizing the key findings and outlining potential future research directions.
 
 \section{Background and Motivation}\label{sec:background}
@@ -209,16 +205,17 @@ which maps the global state to the agent's local observation and perform an acti
 This chosen action is then combined with the actions of other agents forming a \emph{joint action},
 which is used to update the global state and reward.
  
-In this paper, we focus on cooperative MADRL scenarios (so the deep version of MARL), 
+In this paper, we focus on cooperative MARL scenarios, 
 where agents must collaborate to achieve a common goal.
-In the following, we provide an overview of the key concepts in MADRL, 
+In the following, we provide an overview of the key concepts in MARL, 
 including the formalization of the problem, the deep Q-learning algorithm, and the training paradigms used in the literature.
 \subsection{Formalization}
-Since MADRL is a broad field, it is essential to provide a formalization to guide the discussion.
+Since MARL is a broad field, it is essential to provide a formalization to guide the discussion.
 In this paper, we consider partially observable networked markov decision process (PONMDP)~\cite{DBLP:journals/tac/AdlakhaLG12} as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where
 
 \begin{itemize}
-  \item $\mathcal{G} = (N, E)$ is a communication graph, where $N$ is the set of $n$ agents and $E \subseteq N \times N$ represents the communication links between agents. Time-varying graphs $\mathcal{G}_t = (N, E_t)$ can be used to represent communication evolving over time $t$.
+  \item $\mathcal{G} = (N, E)$ is a communication graph, where $N$ is the set of $n$ agents and $E \subseteq N \times N$ represents the communication links between agents. 
+  Time-varying graphs $\mathcal{G}_t = (N, E_t)$ can be used to represent communication evolving over time $t$.
   \item $\mathcal{S}$ is the global state space.
   \item $\mathcal{A} = \mathcal{A}^1 \times \dots \times \mathcal{A}^n$ is the joint action space, where $\mathcal{A}^i$ is the action space of agent $i$.
   \item $\mathcal{O} = \mathcal{O}^1 \times \dots \times \mathcal{O}^n$ is the joint observation space, where $\mathcal{O}^i$ is the observation space for agent $i$.
@@ -238,7 +235,7 @@ or some global reward function like the average reward over all agents.
 Formally, it can be defined as:
 \[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
 
-In doing this, agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function or Q-value. 
+In doing this, agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function (also known as Q-value). 
 The latter represents the expected cumulative discounted reward the agent will receive by taking action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and then following its policy $\pi^i$:
 
 \[ Q^i(s, a) = \mathbb{E}_{\pi^i} \left[ \sum_{t=0}^{\infty} \gamma^t r^i_{t+1} | s_0 = s, a_0 = a \right] \]
@@ -249,7 +246,7 @@ The latter represents the expected cumulative discounted reward the agent will r
 
 %where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy. 
 %The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
-There are several algorithms which try to find the optimal Q-value function, one of the most popular is the deep Q-learning algorithm.
+Several algorithms aim to find the \emph{optimal} Q-value function, which maximizes the expected cumulative reward. One of the most popular among these is the Deep Q-learning algorithm.
 \subsubsection{Deep Q-Learning Formalization}
 Deep Q-learning~\cite{DBLP:conf/l4dc/FanWXY20} utilizes a deep neural network, 
 often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
@@ -268,8 +265,8 @@ and $\mathcal{D}$ is the experience replay buffer, a collection of past experien
 %
 In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
 For centralized training, the global state $s$ can be used as input. 
-The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed deep Q-learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
-For example, in independent deep Q-learning, each agent updates its Q-network independently using its local reward $r^i$:
+The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed Deep Q-learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
+For example, in independent Deep Q-learning--more details in \Cref{sec:sota}--each agent updates its Q-network independently using its local reward $r^i$:
 \begin{equation}
   \resizebox{\linewidth}{!}{$
   \mathcal{L}^i(\theta^i) = \mathbb{E}_{(o^i, a^i, r^i, o'^i) \sim \mathcal{D}^i} \left[ \left( r^i + \gamma \max_{a'^i} Q^i(o'^i, a'^i; \theta^{i-}) - Q^i(o^i, a^i; \theta^i) \right)^2 \right]
@@ -292,11 +289,10 @@ Two prominent paradigms are centralized training with decentralized execution (C
 In CTDE, a central learner trains all agents, 
 but execution of the learned policy is decentralized. 
 This process typically involves two phases:
-\begin{itemize}
-    \item \textbf{Offline training:} agents interact with a simulator or environment, 
-    gathering experience data used to update the central learner's policy.
-    \item \textbf{Online execution:} agents deploy the learned policy in the environment without further learning.
-\end{itemize}
+\begin{description}
+  \item[Offline training:] Agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
+  \item[Online execution:] Agents deploy the learned policy in the environment without further learning.
+\end{description}
 This approach offers several benefits.  
 Leveraging a centralized dataset allows for efficient learning, 
 potentially exploiting global information, 
@@ -308,10 +304,10 @@ Scalability can become problematic with a large number of agents.
 The reliance on a central learner hinders adaptation to dynamic environments or tasks during runtime.
 \sloppy
 \paragraph{Decentralized Training with Decentralized Execution (DTDE)}
-DTDE eliminates the central learner; each agent learns independently. 
+DTDE eliminates the central learner; each agent learns independently from its own experiences.
 Inter-agent cooperation and communication can be incorporated during both training and execution. 
-Unlike CTDE, training and execution phases are not necessarily separate. 
-Simultaneous learning and execution allow for adaptation to changing environments or tasks at runtime.
+Unlike CTDE, training and execution phases are not necessarily separate---
+simultaneous learning and execution allow for adaptation to changing environments or tasks at runtime.
 %
 Key advantages of DTDE include scalability with the number of agents and adaptability to dynamic environments.
 %
@@ -321,16 +317,15 @@ The lack of central coordination can lead to instability and difficulties in dif
 Online learning in DTDE can introduce non-stationarity if agents do not account for other agents' evolving policies during training, 
 as the environment effectively changes from each agent's perspective.
 
-\subsection{State of the Art}
-Multi-agent reinforcement learning is a longstanding research area with a rich literature, starting 
+\subsection{State of the Art}\label{sec:sota}
+MARL is a longstanding research area with a rich literature, starting 
 from seminal works like~\cite{tan1993multi} and~\cite{busoniu2008comprehensive} to more recent contributions like~\cite{gronauer2022multi} and~\cite{canese2021multi}.
 %
-In the following, we briefly discuss some of the most relevant approaches in the field.
+In the following, we briefly discuss some of the most relevant approaches in the field, which lead to the motivation for our work.
 \subsubsection{Independent Learners}
 In independent learners, each agent learns its policy independently, disregarding the actions and policies of other agents. 
 This straightforward approach, among the earliest explored in MARL, often relies on variants of Q-learning. 
-However, independent learners struggle with coordination due to the non-stationarity introduced by the simultaneous learning of other agents.
-
+%
 Several algorithms have attempted to address these coordination challenges within the independent learner paradigm. 
 Basic decentralized Q-learning~\cite{tan1993multi} allows each agent to learn its Q-values independently but often converges to suboptimal joint policies due to a lack of coordination. 
 Subsequent work introduced heuristic-based extensions to improve coordination.
@@ -341,11 +336,11 @@ Empirical comparisons of these algorithms highlight the trade-offs in performanc
 While initially developed for tabular settings, some of these methods, like hysteretic Q-learning~\cite{palmer2017lenient} and lenient Q-learning, have been extended to deep reinforcement learning settings. 
 However, these independent approaches, even with deep learning, often exhibit instability and slow convergence in complex environments and fundamentally lack explicit mechanisms for inter-agent coordination. 
 Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
-\paragraph{Neighboring-Based Methods}
+\subsubsection{Neighboring-Based Methods}
 Neighboring-based methods in MARL address the scalability and communication overhead challenges of fully centralized approaches by restricting agent interactions to a local neighborhood. 
 This introduces a structure where agents communicate and coordinate with a limited set of neighbors, reducing the complexity of joint action and policy learning.
 %
-One prominent category within neighboring-based methods is consensus-based algorithms. 
+One prominent category within neighboring-based methods is \emph{consensus-based} algorithms. 
 These algorithms aim to reach a consensus among agents on shared values or policies through local information exchange. 
 Early work like QD-learning~\cite{kar2012qd} extends Q-learning with a consensus update term, 
 enabling agents to converge towards optimal Q-values despite only receiving local rewards.
@@ -356,28 +351,29 @@ as seen in the recent works~\cite{7434032,pennesi2010distributed,zhang2018fully,
 
 These algorithms often exhibit improved scalability and communication efficiency compared to fully centralized methods, 
 but still need lack in capturing the global structure of the environment and the interactions between agents.
-
-\paragraph{Centralized Training Methods} CTDE is a prominent paradigm in MARL~\cite{ning2024survey}, 
+\subsubsection{Centralized Training Methods} CTDE is a prominent paradigm in MARL~\cite{ning2024survey}, 
 leveraging centralized information during training to learn decentralized policies for execution. 
 This approach addresses the challenges of partial observability and non-stationarity while maintaining the scalability of decentralized execution. % 
 Actor-critic methods are well-suited for the CTDE paradigm, 
 where a centralized critic provides feedback to decentralized actors~\cite{DBLP:conf/icml/RashidSWFFW18,DBLP:journals/corr/SunehagLGCZJLSL17,yu2022surprising,DBLP:conf/nips/LoweWTHAM17}. 
 % 
-The most influential algorithms in this area are the one called policy-based methods (i.e., the ones that learn a policy directly).
+The most influential algorithms in this area are the one called \emph{policy-based} methods (i.e., the ones that learn a policy directly).
 %
 Multi-agent deep deterministic policy Gradient (MADDPG)~\cite{DBLP:conf/nips/LoweWTHAM17} employs a centralized critic that has access to the states and actions of all agents, providing more informative feedback for policy updates. 
 Each agent then learns a deterministic policy based on its local observations. % 
 Building on the actor-critic framework, Multi-Agent Proximal Policy Optimization (MAPPO)~\cite{yu2022surprising} extends the centralized critic concept to the policy optimization setting. 
 MAPPO leverages a centralized critic to estimate advantage functions for policy updates, while individual agents learn stochastic policies. 
-This approach has shown promising results in various cooperative and competitive MARL tasks, exhibiting improved sample efficiency and robustness compared to MADDPG. % 
-Another class of algorithms, called value-based methods, learn a value function that estimates the expected return for each agent.
+%This approach has shown promising results in various cooperative and competitive MARL tasks, exhibiting improved sample efficiency and robustness compared to MADDPG. % 
+Another class of algorithms, called \emph{value-based} methods, learn a value function that estimates the expected return for each agent.
 %
 Value Decomposition Networks (VDN)~\cite{DBLP:journals/corr/SunehagLGCZJLSL17} and QMIX~\cite{DBLP:conf/icml/RashidSWFFW18} are representative algorithms in this category. 
-VDN factorizes the joint Q-function into a sum of individual agent Q-functions, simplifying the learning process. 
+VDN factorizes the joint Q-function into a sum of individual agent Q-functions, 
+simplifying the learning process. 
 QMIX improves upon VDN by learning a monotonic mixing function that combines individual Q-values, 
 allowing for more complex representations of joint action values. % 
-
-Another approach to address the scalability challenge in MARL is \emph{mean field reinforcement learning}, i.e., the one that models the interaction between agents through a mean field, simplifying the multi-agent problem into a single-agent problem against an average opponent.
+%
+Another approach to address the scalability challenge in MARL is \emph{mean field reinforcement learning}, i.e., 
+the one that models the interaction between agents through a mean field, simplifying the multi-agent problem into a single-agent problem against an average opponent.
 %
 In this context, mean field q-learning (Mean-Q)~\cite{DBLP:conf/icml/YangLLZZW18} has been proposed.
 This approach scales well to large numbers of agents and has been successful in various applications. 
@@ -390,31 +386,33 @@ While distributed training approaches offer improved scalability,
 they frequently assume independent learners, 
 neglecting crucial inter-agent coordination and leading to suboptimal global performance.  
 %
-Neighbor-based methods have shown promise in simpler, tabular settings by enabling localized coordination,
+Neighbor-based methods have shown promise in simpler, 
+tabular settings by enabling localized coordination,
 but their integration with deep reinforcement learning remains largely unexplored. 
 This work bridges this gap by introducing a novel approach that combines the power of deep learning with the scalability of neighbor-based communication.  
-Our method aims to achieve both efficient decentralized learning and effective coordination, enabling online adaptation and robust performance in complex multi-agent environments.
+Our method aims to achieve both efficient decentralized learning and effective coordination, 
+enabling online adaptation and robust performance in complex multi-agent environments.
 \section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
-This section introduces three neighboring-based distributed learning strategies for multi-agent reinforcement learning. 
+This section introduces three neighboring-based distributed learning strategies for multi-agent reinforcement learning.
 These strategies leverage local interactions between agents to improve learning efficiency and coordination.
 For this investigation, we focus on deep Q-learning as the underlying learning algorithm,
-and we consider the following strategies:
- k-nearest neighbor averaging, k-nearest neighbor consensus, and experience sharing.
+and we consider the following strategies: k-nearest neighbor averaging, k-nearest neighbor consensus, and experience sharing.
 
-
+\paragraph{K-Nearest Neighbor}
 Since these strategies are in general based on the notion of k-nearest neighbors,
 we first introduce this concept and then describe each strategy in detail.
 Formally, consider a \emph{weighted} communication graph $\mathcal{G} = (N, E, W)$, where $N$ is the set of agents, where $W: E \rightarrow \mathbb{R}^+$ is a weight function assigning a positive weight to each edge.  
 Let $d(i,j)$ denote the shortest path length between agents $i$ and $j$ in the weighted graph $\mathcal{G}$. 
 This can be calculated, for instance, using Dijkstra's algorithm. 
-The length of a path is the sum of the weights of the edges along the path. If no path exists between $i$ and $j$, we set $d(i,j) = \infty$.
+The length of a path is the sum of the weights of the edges along the path. 
+If no path exists between $i$ and $j$, we set $d(i,j) = \infty$.
 %
 Then, the set of $k$-nearest neighbors of agent $i$ is defined as:
 $$ \mathcal{N}_k(i) = { j \in N \setminus {i} \mid \text{rank}(d(i,j)) \leq k } $$
 where $\text{rank}(d(i,j))$ denotes the rank of the distance $d(i,j)$ among all distances from agent $i$ to other agents in $N \setminus {i}$, sorted in ascending order (e..g, $\text{rank}(d(i,j)) = 1$ for the smallest distance).
 Ties can be broken arbitrarily.
 
-\subsection{K-Nearest Neighbor Averaging}
+\paragraph{K-Nearest Neighbor Averaging}
 This approach averages an agent's Q-values with those of its nearest neighbors. 
 Each agent maintains a local Q-network and shares its Q-values with its neighbors. 
 The neighbors average the received Q-values and use the result to update their own Q-networks. 
@@ -426,15 +424,15 @@ the update rule for agent $i$ at time $t+1$ is:
   \theta^{t+1}_i = \theta^t_i + \alpha \sum_{j \in \mathcal{N}_k(i)} \frac{1}{k} \theta^t_j
 \end{equation}
 
-\subsection{K-Nearest Neighboring Consensus}
+\paragraph{K-Nearest Neighboring Consensus}
 In case of homogeneous agents (i.e., when all agents have the same action and observation space),
 the goal of learning is to find a common policy that all agents can follow.
-This approach is typically used in large-scale systems where agents are identical and need to reach a consensus---see [cite].
+This approach is typically used in large-scale systems where agents are identical and need to reach a consensus---see~\cite{DBLP:conf/eusipco/BaldazoPZ19}.
 %
-In this case, instead of forcing a common policy, we can let agents learn independently and then select the best-performing agent as the reference for the others, leading to a consensus on the best policy.
+In this case, instead of forcing a common policy, we can let agents learn independently and then select the best-performing agent as the reference for the others, leading eventually to a consensus on the best same policy.
 %
 In this way, each agent $i$ continue to learn independently, but at each iteration, it updates its Q-network using the Q-values of the best-performing agent in its neighborhood.
-
+%
 The best performing agent is selected based on the average reward it has received in the last $n$ episodes.
 Formally, the update rule for agent $i$ at time $t+1$ is:
 \begin{equation}
@@ -442,11 +440,13 @@ Formally, the update rule for agent $i$ at time $t+1$ is:
 \end{equation}
 where $\theta^t_{\text{best}}$ is the Q-network of the best-performing agent in the neighborhood $\mathcal{N}_k(i)$ at time $t$.
 
-\subsection{Experience Sharing}
+\paragraph{Experience Sharing}
 Experience sharing is a simple yet effective method for distributed learning.
-This approach is typically used in centralized training to improve sample efficiency and learning stability.
-In our distributed setting, each agent maintains its own experience replay buffer, but it also shares a fraction of its experiences with its neighbors.
-This allows agents to learn from each other's experiences, potentially accelerating learning and improving coordination because agents can learn from each other's mistakes and successes.
+This approach is typically used in centralized training to improve sample efficiency and learning stability~\cite{marl-book}.
+In our distributed setting, each agent maintains its own experience replay buffer, 
+but it also shares a fraction of its experiences with its neighbors.
+This allows agents to learn from each other's experiences, 
+potentially accelerating learning and improving coordination because agents can learn from each other's mistakes and successes.
 %
 Formally, the reply buffer of agent $i$ at time $t$ is $\mathcal{D}^t_i = \{(o^i, a^i, r^i, o'^i)\}$.
 At each iteration, agent $i$ shares a fraction $\beta$ of its experiences with its neighbors in $\mathcal{N}_k(i)$.
@@ -454,12 +454,14 @@ The update rule for agent $i$ at time $t+1$ is:
 \begin{equation}
   \mathcal{D}^{t+1}_i = \mathcal{D}^t_i \cup \bigcup_{j \in \mathcal{N}_k(i)} \beta \mathcal{D}^t_j
 \end{equation}
-\subsection{Neighboring-Based Training with Deep Q-Learning}
+\paragraph{Neighboring-Based Training with Deep Q-Learning}
 The neighboring-based training strategies can be integrated with deep Q-learning to enable distributed learning in multi-agent settings.
 %
-The algorithm follow the same structure as the deep Q-learning algorithm, but with the addition of the neighboring-based intereactions.
+The algorithm follow the same structure as the deep Q-learning algorithm, 
+but with the addition of the neighboring-based intereactions.
 %
-This may happen with a different frequency for each strategy, depending on the communication overhead and the desired level of coordination.
+This may happen with a different frequency for each strategy, 
+depending on the communication overhead and the desired level of coordination.
 
 In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration of the neighboring-based strategies with deep Q-learning.
 \begin{algorithm}
