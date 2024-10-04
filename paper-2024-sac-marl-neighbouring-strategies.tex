@@ -637,7 +637,7 @@ The mean episode length $L_{mean}$ is calculated as:
 \begin{figure}
   \centering
   \includegraphics[width=1\linewidth]{figures/behavior.pdf}
-  \caption{Graphical representation of wanted and unwanted behaviors.
+  \caption{Wanted and unwanted behaviors.
   On the left, the wanted behavior, the agents correctly cooperate to cover
   two different items.
   While, on the right, the agents do not correctly cooperate covering
@@ -648,33 +648,39 @@ The mean episode length $L_{mean}$ is calculated as:
 
 
 \section{Results and Evaluation}\label{sec:results}
-\begin{itemize}
-\item \textbf{Performance comparison:}
-\begin{itemize}
-\item Present the results of each distributed strategy against the centralized training baseline.
-\item Use graphs and statistical analysis to compare the average episode length and average reward.
-\item Highlight which neighbor-based methods perform comparably to centralized training.
-\end{itemize}
-\item \textbf{Scalability analysis:}
-\begin{itemize}
-\item Describe how the experiments were modified to assess scalability (increasing agents, spawn area).
-\item Show how each method scales with the increasing complexity, using appropriate visualizations.
-\item Discuss the implications of using pre-trained models with a larger number of agents.
-\end{itemize}
-\item \textbf{Communication overhead analysis:}
-\begin{itemize}
-\item Quantify the amount of information exchange for each strategy.
-\item Compare the communication overhead across different neighborhood sizes, possibly using graphs.
-\item Discuss the trade-offs between performance and communication efficiency.
-\item Mention potential techniques for reducing communication overhead.
-\end{itemize}
-\end{itemize}
+
+
+
+% \begin{itemize}
+% \item \textbf{Performance comparison:}
+% \begin{itemize}
+% \item Present the results of each distributed strategy against the centralized training baseline.
+% \item Use graphs and statistical analysis to compare the average episode length and average reward.
+% \item Highlight which neighbor-based methods perform comparably to centralized training.
+% \end{itemize}
+% \item \textbf{Scalability analysis:}
+% \begin{itemize}
+% \item Describe how the experiments were modified to assess scalability (increasing agents, spawn area).
+% \item Show how each method scales with the increasing complexity, using appropriate visualizations.
+% \item Discuss the implications of using pre-trained models with a larger number of agents.
+% \end{itemize}
+% \item \textbf{Communication overhead analysis:}
+% \begin{itemize}
+% \item Quantify the amount of information exchange for each strategy.
+% \item Compare the communication overhead across different neighborhood sizes, possibly using graphs.
+% \item Discuss the trade-offs between performance and communication efficiency.
+% \item Mention potential techniques for reducing communication overhead.
+% \end{itemize}
+% \end{itemize}
 
 \begin{figure}
   \centering
   \includegraphics[width=1\linewidth]{figures/episode_reward_mean.pdf}
   \includegraphics[width=1\linewidth]{figures/episode_len_mean.pdf}
-  \caption{Training results...}
+  \caption{Data collected during training. 
+  We can see that DTDE method is highly unstable, while neighbor-based strategies perform 
+  comparably to CTDE.
+  }
   \label{fig:results}
 \end{figure}
 
