@@ -495,7 +495,8 @@ To validate our approach, we developed a custom learning scenario using three St
   \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
   and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
 
-\paragraph{Environment} First, we extended the \texttt{MultiAgentEnv} from RLlib to implement a custom cooperative environment 
+\subsection{Environment} 
+First, we extended the \texttt{MultiAgentEnv} from RLlib to implement a custom cooperative environment 
   called \emph{collect the items} -- see \Cref{fig:env}.
 %
 This environment consists of a 2D euclidean space in which a variable number of \emph{items} and \emph{agents} 
@@ -515,42 +516,71 @@ Regarding the action space, each agent has $8$ possible moves, namely the possib
   (up, down and diagonal).
 
 % Reward 
-\paragraph{Reward} One of the most important aspects in MARL is how the reward signal that the agents use to 
+\subsection{Reward}
+One of the most important aspects in MARL is how the reward signal that the agents use to 
   learn is defined.
 %
-In particular, we have defined a reward function composed of many subcomponents, namely:
-\begin{itemize}
-  \item Agents are penalized when their action area intersect. 
+In particular, we have defined a reward function composed of many subcomponents.
+
+\paragraph{Collisions} Agents are penalized when their action area intersect. 
   \[ \psi = \begin{cases}
     0 & \text{if no intersections} \\
     -2 \cdot |I_a| & \text{otherwise}
   \end{cases} \]
   Where $I_a$ is the set of agents with intersecting action area.
-  \item Agents are penalized at each time step by a constant value $\sigma$ defined as
+
+\paragraph{Time step} Agents are penalized at each time step by a constant value $\sigma$ defined as
     an hyperparameter.
     \[ \zeta = - \sigma \]
-  \item Each agent $a$ is rewarded if it moves towards one of the visible target items.
+ 
+\paragraph{Moving towards items} Each agent $a$ is rewarded if it moves towards one of the visible target items.
     \[ \xi = (max_{i \in V_{items}} d(p_a^{t+1}, p_i^{t+1}) - d(p_a^{t}, p_i^{t})) \cdot \delta\]
     Where $p_a^t$ is the position of the agent $a$ at time t (similarly for $p_i^{t}$ regarding items),
     $\delta$ is a scalar hyperparameter used to tune the importance of this component and
     $V_{items}$ is the set of visible items.
-  \item Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$).
+\paragraph{Moving away from agents} Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$).
     \[ \chi = \frac{1}{2|N_{a_i}|} \cdot \sum_{a_j \in N_{a_i}} d(p_{a_i}^{t+1}, p_{a_j}^{t+1}) - d(p_{a_i}^{t}, p_{a_j}^{t}) \]
-  \item Each agent is rewarded for any collected visible items ($C_i$) is the set of collected items), 
+
+\paragraph{Collecting items} Each agent is rewarded for any collected visible items ($C_i$) is the set of collected items), 
     whether the item was collected by  the agent itself or by another agent, this strategy encourages agents 
     to develop cooperative behaviors.
     \[ \rho = 100 \cdot |C_i| \]
-\end{itemize}
-The final reward is computed as the sum of all the subcomponents: 
+
+\paragraph{Final reward} The final reward is computed as the sum of all the subcomponents: 
   \[ R = \psi + \zeta + \xi + \chi + \rho \]
   
 % Specify the chosen RL algorithm (DQN) and its hyperparameter configuration
-\paragraph{Learning algorithm}
+\subsection{Learning algorithm}
 
 % Define the evaluation metrics: average episode length and average reward
-\paragraph{Evaluation metrics}
+\subsection{Evaluation metrics} 
+In our experiments, we employed two metrics to evaluate the performance of the learning
+  agents and monitor the quality of the training process, namely: 
+  \begin{enumerate*}[label=(\roman*)]
+    \item \emph{Mean Episode Reward}; and
+    \item \emph{Mean Episode Length}.
+  \end{enumerate*} 
 
+\paragraph{Mean Episode Reward} 
+The Mean Episode Reward measures the average cumulative reward the agent obtains during each episode, 
+  serving as a direct indicator of how well each agent is performing in achieving its task.
+%
+Formally, for $N$ episodes, the mean reward $R_{mean}$ is computed as:
+  \[ R_{mean} = \frac{1}{N} \sum_{i=1}^{N} R_i \]
+  where $R_i$ is the total reward obtained in the $i$-th episode.
 
+\paragraph{Mean Episode Length}
+On the other hand, the Mean Episode Length represents the average number of time steps (or actions) 
+  the agent takes per episode before reaching the terminal state. 
+%
+It provides insights into the agent's efficiency in completing tasks, especially in environments 
+  where shorter episodes indicate better performance.
+%
+The mean episode length $L_{mean}$ is calculated as:
+  \[ L_{mean} = \frac{1}{N} \sum_{i=1}^{N} L_i \]
+  where $L_i$ is length of $i$-th episode.
+
+  
 \begin{figure}
   \centering
   \includegraphics[width=0.7\linewidth]{figures/env.pdf}
