@@ -525,6 +525,7 @@ In particular, we have defined a reward function composed of many subcomponents,
     0 & \text{if no intersections} \\
     -2 \cdot |I_a| & \text{otherwise}
   \end{cases} \]
+  Where $I_a$ is the set of agents with intersecting action area.
   \item Agents are penalized at each time step by a constant value $\sigma$ defined as
     an hyperparameter.
     \[ \zeta = - \sigma \]
