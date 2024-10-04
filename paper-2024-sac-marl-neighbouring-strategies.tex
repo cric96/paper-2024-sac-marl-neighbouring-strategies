@@ -5,6 +5,7 @@
 \usepackage{autobreak}
 \usepackage{mytodonotes}
 \usepackage{subcaption}
+\usepackage{url}
 \usepackage[inline]{enumitem}
 \usepackage[ruled,vlined]{algorithm2e}
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -495,6 +496,18 @@ To validate our approach, we developed a custom learning scenario using three St
   \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
   and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
 
+We ran a total of $35$ training experiments, namely: $5$ different methods 
+  (centralized, distributed and neighbor based approaches), and for each method we ran multiple experiments
+  varying the random seed (7 seeds) to obtain stronger results. 
+%
+Each experiment consisted of $50$ training episodes. 
+
+Furthermore, we ran $15$ evaluation experiments, namely: $5$ different methods and for each method 
+  we varied the number of agents ($8$, $16$ and $32$) to assess the metrics under various conditions.
+  In this case, for each experiment we ran $100$ evaluation episodes.
+
+All the experiments are publicly available and reproducible\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
+
 \subsection{Environment} 
 First, we extended the \texttt{MultiAgentEnv} from RLlib to implement a custom cooperative environment 
   called \emph{collect the items} -- see \Cref{fig:env}.
@@ -515,7 +528,7 @@ In particular, each agent has an observation space defined by three main paramet
 Regarding the action space, each agent has $8$ possible moves, namely the possible direction on a grid 
   (up, down and diagonal).
 
-% Reward 
+
 \subsection{Reward}
 One of the most important aspects in MARL is how the reward signal that the agents use to 
   learn is defined.
