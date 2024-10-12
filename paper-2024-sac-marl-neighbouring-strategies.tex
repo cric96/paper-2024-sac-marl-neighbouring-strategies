@@ -500,31 +500,40 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
 This section presents the experimental setup and evaluation metrics used to assess the performance of the proposed neighboring-based training strategies.
 All the experiments and data produced are reproducible and publicly available\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
 \subsection{Simulated environment}
-The proposed multi-agent environment, which we design to evaluate the efficacy of the neighboring-based strategies,
- consists of a two-dimensional Euclidean space 
- populated by a variable number of \emph{targets} and \emph{agents}, 
- whose initial positions are randomly distributed across the space.
+The proposed multi-agent environment is a variant of the ``gather the items'' scenario, designed to study the impact of neighborhood strategies. 
+It consists of a 2D Euclidean space populated by $A$ agents and $T$ targets, 
+initially placed at random locations.
 %
-The environment is considered solved when all targets are collected, terminating the episode. 
-To prevent infinitely long episodes, a maximum time limit of T = 300 steps is imposed. 
-If all items are collected before this limit, the episode terminates early.
-The agents' objective  is to collaboratively collect all the targets in the environment, minimizing the total retrivial time.
-%
-The observation space of each agent consist of a tuple of three elements: %% TODO CHECK AGAIN
-\begin{enumerate*}[label=(\roman*)]
-  \item number of the closest agents that the agent is able to see (thus, forming a neighborhood);
-  \item number of the closest items that the agent is able to see;
-  \item memory of past states, thus encoding also temporal information, helping each agent to understand 
-    the evolution of the environment.
-\end{enumerate*} 
-%
-The action space for each agent is discrete, 
-consisting of eight possible movements corresponding 
-to the cardinal and diagonal directions on a grid.
-%
+The objective is for the agents to collectively capture all targets, 
+at which point the environment episode terminates successfully.  
+A maximum time limit of $T_{max} = 300$ time steps is enforced to prevent indefinite episodes.
 
-This setup was chosen as it presents a challenging coordination problem that requires agents to learn both individual target-seeking behaviors and collaborative strategies for reducing the overall retrivial time, 
-offering a suitable testbed for evaluating the effectiveness of the proposed neighbor-based decentralized training approaches.
+At each time step $t$, each agent $a$ receives an observation $o_a^t$ composed of the following elements:
+\begin{itemize}
+  \item \emph{Neighborhood perception}:  Agent $a$ perceives the relative positions (distance and direction) of its $A_v$ nearest neighboring agents. 
+  This information is represented as a set $\mathcal{V}_a^t = \{(d_{aj}^t, \theta_{aj}^t) | j \in \text{Nearest } A_v \text{ agents}\}$, 
+  where $d_{aj}^t$ is the Euclidean distance between agent $a$ and agent $j$ at time $t$, and $\theta_{aj}^t$ is the angle between the vector pointing from agent $a$ to agent $j$ and a fixed reference axis.
+  \item \emph{Target perception}: Agent $a$ perceives the relative positions (distance and direction) of its $T_v$ nearest targets. 
+  This is represented as a set $\mathcal{T}_a^t = \{(d_{ak}^t, \theta_{ak}^t) | k \in \text{Nearest } T_v \text{ targets}\}$, with $d_{ak}^t$ and $\theta_{ak}^t$ defined analogously to the neighborhood perception.
+  \item \emph{Memory}: Agent $a$ maintains a memory $\mathcal{H}_a^t$ of past perceptions, storing the neighborhood and target perceptions from the previous $H_t$ time steps. Formally, $\mathcal{H}_a^t = \{\mathcal{N}_a^{t-\tau}, \mathcal{T}_a^{t-\tau} | \tau = 1, \dots, H_t\}$. 
+  This can be represented as a tensor of shape $(H_t, A_v + T_v, 2)$, where the last dimension represents the relative distance and angle for each perceived agent or target.
+\end{itemize}
+The complete observation $o_a^t$ at time $t$ for agent $a$ is thus given by $o_a^t = (\mathcal{N}_a^t, \mathcal{T}_a^t, \mathcal{H}_a^t)$.
+
+Communication between agents is restricted to a neighborhood $\mathcal{C}_a^t \subseteq \mathcal{N}_a^t$ 
+and depends on a communication graph $\mathcal{G}$.
+%
+This communication enables the exchange of information such as Q-values or experiences 
+using on of the neighboring-based strategies discussed in \Cref{sec:neighboring}.
+%
+The action space for each agent is discrete, consisting of eight possible movements corresponding to the cardinal and diagonal directions on a grid.
+
+This environment provides a challenging coordination problem, 
+requiring agents to learn individual target-seeking behaviors and collaborative strategies 
+to minimize retrieval time. 
+%
+It serves as a suitable testbed for evaluating the effectiveness 
+of neighbor-based decentralized training approaches.
 \subsubsection{Reward function}
 In the proposed environment, we design a reward function that both consider the individual performance of each agent (e.g., avoid collision) and the global performance of the team (e.g., collect items in the shortest time possible).
 In the following, we describe the components of the reward function:
