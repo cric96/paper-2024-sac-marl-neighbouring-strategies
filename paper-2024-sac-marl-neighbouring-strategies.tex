@@ -340,10 +340,10 @@ Instead, algorithms such as hysteretic Q-learning~\cite{matignon2007hysteretic},
 Empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
 While initially developed for tabular settings, some of these methods, like hysteretic Q-learning~\cite{palmer2017lenient} and lenient Q-learning, have been extended to deep reinforcement learning settings. 
 However, these independent approaches, even with deep learning, often exhibit instability and slow convergence in complex environments and fundamentally lack explicit mechanisms for inter-agent coordination. 
-Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
+%Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
 \subsubsection{Neighboring-Based Methods}
 Neighboring-based methods in MARL address the scalability and communication overhead challenges of fully centralized approaches by restricting agent interactions to a local neighborhood. 
-This introduces a structure where agents communicate and coordinate with a limited set of neighbors, reducing the complexity of joint action and policy learning.
+This introduces agents communication and coordination with a limited set of neighbors, reducing the complexity of full joint action and policy learning.
 %
 One prominent category within neighboring-based methods is \emph{consensus-based} algorithms. 
 These algorithms aim to reach a consensus among agents on shared values or policies through local information exchange. 
@@ -397,15 +397,15 @@ but their integration with deep reinforcement learning remains largely unexplore
 This work bridges this gap by introducing a novel approach that combines the power of deep learning with the scalability of neighbor-based communication.  
 Our method aims to achieve both efficient decentralized learning and effective coordination, 
 enabling online adaptation and robust performance in complex multi-agent environments.
+
 \section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
 This section introduces three neighboring-based distributed learning strategies for multi-agent reinforcement learning.
 These strategies leverage local interactions between agents to improve learning efficiency and coordination.
 For this investigation, we focus on deep Q-learning as the underlying learning algorithm,
 and we consider the following strategies: k-nearest neighbor averaging, k-nearest neighbor consensus, and experience sharing.
 
-\paragraph{K-Nearest Neighbor}
-Since these strategies are in general based on the notion of k-nearest neighbors,
-we first introduce this concept and then describe each strategy in detail.
+\paragraph{K-Nearest Neighbor Definition}
+The proposed strategies rely on the concept of k-nearest neighbors.
 Formally, consider a \emph{weighted} communication graph $\mathcal{G} = (N, E, W)$, where $N$ is the set of agents, where $W: E \rightarrow \mathbb{R}^+$ is a weight function assigning a positive weight to each edge.  
 Let $d(i,j)$ denote the shortest path length between agents $i$ and $j$ in the weighted graph $\mathcal{G}$. 
 This can be calculated, for instance, using Dijkstra's algorithm. 
@@ -418,6 +418,7 @@ where $\text{rank}(d(i,j))$ denotes the rank of the distance $d(i,j)$ among all 
 Ties can be broken arbitrarily.
 
 \paragraph{K-Nearest Neighbor Averaging}
+\sloppy
 This approach averages an agent's Q-values with those of its nearest neighbors. 
 Each agent maintains a local Q-network and shares its Q-values with its neighbors. 
 The neighbors average the received Q-values and use the result to update their own Q-networks. 
@@ -497,15 +498,16 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
 \end{algorithm}
 \section{Experimental Setup}\label{sec:experiments}
 
-To validate our approach, we developed a custom learning scenario using three State-of-the-Art frameworks 
-  in Reinforcement Learning and Deep Learning, namely: \emph{Ray}~\cite{DBLP:conf/osdi/MoritzNWTLLEYPJ18} 
+To validate our approach, we developed a custom learning scenario using three state-of-the-art frameworks 
+  in RL and DL, namely: \emph{Ray}~\cite{DBLP:conf/osdi/MoritzNWTLLEYPJ18} 
   (in particular, its module \emph{RLlib}~\cite{DBLP:conf/icml/LiangLNMFGGJS18}),
   \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
   and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
 
-We ran a total of $35$ training experiments, namely: $5$ different methods 
-  (centralized, distributed and neighbor based approaches), and for each method we ran multiple experiments
-  varying the random seed (7 seeds) to obtain stronger results. 
+We ran a total of $35$ training experiments, 
+namely: $5$ different methods %% TODO check how many ex are discussed
+  (centralized, distributed and the three neighbor strategies discussed).
+Each method was evaluated across 10 distinct random seeds to enhance the statistical robustness of the observed results.
 %
 Each experiment consisted of $50$ training episodes. 
 
