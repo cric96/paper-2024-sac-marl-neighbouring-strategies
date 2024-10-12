@@ -517,27 +517,28 @@ Furthermore, we ran $15$ evaluation experiments, namely: $5$ different methods a
 
 All the experiments are publicly available and reproducible\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
 
-\subsection{Environment} 
-First, we extended the \texttt{MultiAgentEnv} from RLlib to implement a custom cooperative environment 
-  called \emph{collect the items}. % -- see \Cref{fig:env}.
+\subsection{Simulated environment}
+The proposed multi-agent environment, which we design to evaluate the efficacy of the neighboring-based strategies,
+ consists of a two-dimensional Euclidean space 
+ populated by a variable number of \emph{targets} and \emph{agents}, 
+ whose initial positions are randomly distributed across the space.
 %
-This environment consists of a 2D euclidean space in which a variable number of \emph{items} and \emph{agents} 
- are randomly placed.
+The agents' objective  is to collaboratively collect all the targets in the environment, minimizing the total retrivial time.
 %
-The goal of the agents is to cooperate to collect all the items in the smallest amount of time possible. 
-%
-In particular, each agent has an observation space defined by three main parameters, namely: 
+The observation space of each agent consist of a tuple of three elements: %% TODO CHECK AGAIN
 \begin{enumerate*}[label=(\roman*)]
-  \item number of closest agents that the agent is able to see (thus, forming a neighborhood);
-  \item number of closest items that the agent is able to see;
+  \item number of the closest agents that the agent is able to see (thus, forming a neighborhood);
+  \item number of the closest items that the agent is able to see;
   \item memory of past states, thus encoding also temporal information, helping each agent to understand 
     the evolution of the environment.
 \end{enumerate*} 
 %
-Regarding the action space, each agent has $8$ possible moves, namely the possible direction on a grid 
-  (up, down and diagonal).
+The action space for each agent is discrete, 
+consisting of eight possible movements corresponding 
+to the cardinal and diagonal directions on a grid
 
-
+This setup was chosen as it presents a challenging coordination problem that requires agents to learn both individual target-seeking behaviors and collaborative strategies for reducing the overall retrivial time, 
+offering a suitable testbed for evaluating the effectiveness of the proposed neighbor-based decentralized training approaches.
 \subsection{Reward}
 One of the most important aspects in MARL is how the reward signal that the agents use to 
   learn is defined.
