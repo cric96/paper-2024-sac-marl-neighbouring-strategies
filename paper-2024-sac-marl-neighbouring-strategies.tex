@@ -523,6 +523,9 @@ The proposed multi-agent environment, which we design to evaluate the efficacy o
  populated by a variable number of \emph{targets} and \emph{agents}, 
  whose initial positions are randomly distributed across the space.
 %
+The environment is considered solved when all targets are collected, terminating the episode. 
+To prevent infinitely long episodes, a maximum time limit of T = 300 steps is imposed. 
+If all items are collected before this limit, the episode terminates early.
 The agents' objective  is to collaboratively collect all the targets in the environment, minimizing the total retrivial time.
 %
 The observation space of each agent consist of a tuple of three elements: %% TODO CHECK AGAIN
@@ -535,7 +538,9 @@ The observation space of each agent consist of a tuple of three elements: %% TOD
 %
 The action space for each agent is discrete, 
 consisting of eight possible movements corresponding 
-to the cardinal and diagonal directions on a grid
+to the cardinal and diagonal directions on a grid.
+%
+
 
 This setup was chosen as it presents a challenging coordination problem that requires agents to learn both individual target-seeking behaviors and collaborative strategies for reducing the overall retrivial time, 
 offering a suitable testbed for evaluating the effectiveness of the proposed neighbor-based decentralized training approaches.
@@ -604,21 +609,22 @@ A smaller batch size could lead to noisier updates, while a larger one might slo
 In our experiments, we employed two metrics to evaluate the performance of the learning
   agents and monitor the quality of the training process, namely: 
   \begin{enumerate*}[label=(\roman*)]
-    \item \emph{Mean Episode Reward}; and
-    \item \emph{Mean Episode Length}.
+    \item \emph{Mean Episode Reward} ($R_{mean}$); and
+    \item \emph{Mean Episode Length} ($L_{mean}$).
   \end{enumerate*} 
-
-\paragraph{Mean Episode Reward} 
-The Mean Episode Reward measures the average cumulative reward the agent obtains during each episode, 
+%
+$R_{mean}$ measures the average cumulative reward the agent obtains during each episode, 
   serving as a direct indicator of how well each agent is performing in achieving its task.
 %
 Formally, for $N$ episodes, the mean reward $R_{mean}$ is computed as:
   \[ R_{mean} = \frac{1}{N} \sum_{i=1}^{N} R_i \]
-  where $R_i$ is the total reward obtained in the $i$-th episode.
+  where $R_i$ is the total reward obtained by all agents in the $i$-th episode. 
+  Formally, for a certain episode $i$, composed of $n$ agents, last $T$ time steps, the total reward $R_i$ is calculated as:
+  \[ R_i = \sum_{t=0}^{T} \sum_{j=1}^{n} r^j_t \]
+  where $r^j_t$ is the reward obtained by agent $j$ at time step $t$.
 
-\paragraph{Mean Episode Length}
-On the other hand, the Mean Episode Length represents the average number of time steps (or actions) 
-  the agent takes per episode before reaching the terminal state. 
+
+On the other hand, the $L_{mean}$ represents the average number of time steps needed to reaching the terminal state, i.e., no more items to collect. 
 %
 It provides insights into the agent's efficiency in completing tasks, especially in environments 
   where shorter episodes indicate better performance.
