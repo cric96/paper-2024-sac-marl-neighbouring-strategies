@@ -539,37 +539,34 @@ to the cardinal and diagonal directions on a grid
 
 This setup was chosen as it presents a challenging coordination problem that requires agents to learn both individual target-seeking behaviors and collaborative strategies for reducing the overall retrivial time, 
 offering a suitable testbed for evaluating the effectiveness of the proposed neighbor-based decentralized training approaches.
-\subsection{Reward}
-One of the most important aspects in MARL is how the reward signal that the agents use to 
-  learn is defined.
-%
-In particular, we have defined a reward function composed of many subcomponents.
-
-\paragraph{Collisions} Agents are penalized when their action area intersect. 
+\subsubsection{Reward function}
+In the proposed environment, we design a reward function that both consider the individual performance of each agent (e.g., avoid collision) and the global performance of the team (e.g., collect items in the shortest time possible).
+In the following, we describe the components of the reward function:
+\paragraph{Collisions} Agents are penalized when their action area intersect. This penalty is proportional to the number of agents involved in a collision:
   \[ \psi = \begin{cases}
     0 & \text{if no intersections} \\
     -2 \cdot |I_a| & \text{otherwise}
   \end{cases} \]
-  Where $I_a$ is the set of agents with intersecting action area.
+where $I_a$ is the set of agents with intersecting action area.
 
 \paragraph{Time step} Agents are penalized at each time step by a constant value $\sigma$ defined as
-    an hyperparameter.
+    an hyperparameter, to encourage them to complete the task as quickly as possible.
     \[ \zeta = - \sigma \]
  
-\paragraph{Moving towards items} Each agent $a$ is rewarded if it moves towards one of the visible target items.
+\paragraph{Moving towards items} Each agent $a$ is rewarded if it moves towards one of the visible target items, discouraging agents from wandering aimlessly.
     \[ \xi = (max_{i \in V_{items}} d(p_a^{t+1}, p_i^{t+1}) - d(p_a^{t}, p_i^{t})) \cdot \delta\]
     Where $p_a^t$ is the position of the agent $a$ at time t (similarly for $p_i^{t}$ regarding items),
     $\delta$ is a scalar hyperparameter used to tune the importance of this component and
     $V_{items}$ is the set of visible items.
-\paragraph{Moving away from agents} Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$).
+\paragraph{Moving away from agents} Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$). This strategy encourages agents to avoid clustering and explore the environment more effectively.
     \[ \chi = \frac{1}{2|N_{a_i}|} \cdot \sum_{a_j \in N_{a_i}} d(p_{a_i}^{t+1}, p_{a_j}^{t+1}) - d(p_{a_i}^{t}, p_{a_j}^{t}) \]
 
-\paragraph{Collecting items} Each agent is rewarded for any collected visible items ($C_i$) is the set of collected items), 
+\paragraph{Collecting items} Each agent is rewarded for any collected visible items ($C_i$ is the set of collected items), 
     whether the item was collected by  the agent itself or by another agent, this strategy encourages agents 
     to develop cooperative behaviors.
     \[ \rho = 100 \cdot |C_i| \]
 
-\paragraph{Final reward} The final reward is computed as the sum of all the subcomponents: 
+\paragraph{Final reward} The final reward is computed as the sum of all the subcomponents:
   \[ R = \psi + \zeta + \xi + \chi + \rho \]
   
 
