@@ -783,12 +783,27 @@ This makes all approaches feasible, although in scenarios with limited communica
 
 
 \section{Conclusion}\label{sec:conclusion}
-\begin{itemize}
-\item Summarize the key findings of the paper.
-\item Emphasize the viability of neighbor-based methods as alternatives to centralized training in MARL.
-\item Discuss the trade-offs observed in terms of performance, scalability, and communication overhead.
-\item Suggest potential directions for future research, such as exploring hybrid approaches or more advanced communication protocols.
-\end{itemize}
+This paper proposes several neighbor-based strategies to achieve decentralized multi-agent learning (i.e., DTDE )with performance 
+ comparable to centralized approaches (i.e., CTDE). 
+%
+These strategies offer the flexibility of DTDE while retaining the stability and performance of CTDE. 
+%
+Specifically, we introduce three approaches, namely: NN Averaging, NN Consensus and Experience Sharing
+ which have been evaluated against various baselines, including CTDE, DTDE based on DQN, and MAPPO. 
+%
+The results show that two of the three proposed methods significantly enhance DTDE performance, achieving outcomes comparable 
+ to CTDE, while NN consensus falls short of this goal, maintaining performance similar to DTDE. 
+%
+Furthermore, we analyzed the communication overhead, demonstrating that it remains minimal across all cases, 
+ particularly with experience sharing, making it suitable for scenarios with very limited communication resources.
+
+Future works may include several promising directions, namely:
+\begin{enumerate*}[label=(\roman*)]
+  \item explore the implementation of more advanced consensus algorithms to determine if this strategy can also achieve 
+   results comparable to the other two;
+  \item develop more sophisticated communication protocols to further reduce communication overhead; and
+  \item test these approaches in a wider range of, and more complex, scenarios than the one considered in this paper.
+\end{enumerate*} 
 
 
 \bibliographystyle{ACM-Reference-Format}
