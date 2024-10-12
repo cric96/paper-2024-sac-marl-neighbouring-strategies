@@ -270,12 +270,12 @@ and $\mathcal{D}$ is the experience replay buffer, a collection of past experien
 In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
 For centralized training, the global state $s$ can be used as input. 
 The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed Deep Q-learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
-For example, in independent Deep Q-learning--more details in \Cref{sec:sota}--each agent updates its Q-network independently using its local reward $r^i$:
-\begin{equation}
-  \resizebox{\linewidth}{!}{$
-  \mathcal{L}^i(\theta^i) = \mathbb{E}_{(o^i, a^i, r^i, o'^i) \sim \mathcal{D}^i} \left[ \left( r^i + \gamma \max_{a'^i} Q^i(o'^i, a'^i; \theta^{i-}) - Q^i(o^i, a^i; \theta^i) \right)^2 \right]
-  $}
-  \end{equation}
+%For example, in independent Deep Q-learning--more details in \Cref{sec:sota}--each agent updates its Q-network independently using its local reward $r^i$:
+%\begin{equation}
+%  \resizebox{\linewidth}{!}{$
+%  \mathcal{L}^i(\theta^i) = \mathbb{E}_{(o^i, a^i, r^i, o'^i) \sim \mathcal{D}^i} \left[ \left( r^i + \gamma \max_{a'^i} Q^i(o'^i, a'^i; \theta^{i-}) - Q^i(o^i, a^i; \theta^i) \right)^2 \right]
+%  $}
+%  \end{equation}
 %\subsection{Key Concepts}
 
 \subsection{Learning Schemes}
