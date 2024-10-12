@@ -208,10 +208,10 @@ The goal of each agent is to maximize its cumulative reward.
 %
 Environments can be \emph{partially observable}, meaning agents may not have access to the full global state, only receiving local observations through their respective \emph{observation functions}.
  
-In this paper, we focus on cooperative MARL scenarios, 
-where agents must collaborate to achieve a common goal.
-In the following, we provide an overview of the key concepts in MARL, 
-including the formalization of the problem, the deep Q-learning algorithm, and the training paradigms used in the literature.
+%In this paper, we focus on cooperative MARL scenarios, 
+%where agents must collaborate to achieve a common goal.
+%In the following, we provide an overview of the key concepts in MARL, 
+%including the formalization of the problem, the deep Q-learning algorithm, and the training paradigms used in the literature.
 \subsection{Formalization}
 Since MARL is a broad field, it is essential to provide a formalization to guide the discussion.
 In this paper, we consider partially observable networked markov decision process (PONMDP)~\cite{DBLP:journals/tac/AdlakhaLG12} as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where
@@ -234,7 +234,7 @@ Agents can exchange information with their neighbors in $\mathcal{G}$
 (or $\mathcal{G}t$ if the graph is time-varying). 
 %
 The objective is typically to maximize the expected discounted sum of rewards $\sum{t=0}^{\infty} \gamma^t r^i_t$ for each agent $i$, 
-or some global reward function like the average reward over all agents.
+or some global reward function like the average reward over all agents in case of cooperative scenarios.
 %Formally, it can be defined as:
 %\[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
 Agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function (also known as \emph{Q-value}). 
@@ -294,10 +294,10 @@ Two prominent paradigms are centralized training with decentralized execution (C
 In CTDE, a central learner trains all agents, 
 but execution of the learned policy is decentralized. 
 This process typically involves two phases:
-\begin{itemize}
+\begin{enumerate}
   \item \textit{Offline training:} Agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
   \item \textit{Online execution:} Agents deploy the learned policy in the environment without further learning.
-\end{itemize}
+\end{enumerate}
 This approach offers several benefits.  
 Leveraging a centralized dataset allows for efficient learning, 
 potentially exploiting global information, 
@@ -491,7 +491,7 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
               Update $\theta^i$ by minimizing the TD error\\
               Every C steps, update target network $\theta^{i-} \leftarrow \theta^i$\\
               \textbf{
-              Every S steps, perform neighbor interaction (e.g., averaging, consensus, experience sharing)}
+              Every S steps, perform neighboring strategy}
           }
       }
   }
@@ -653,7 +653,7 @@ The mean episode length $L_{mean}$ is calculated as:
 
 \begin{figure}
   \centering
-  \includegraphics[width=1\linewidth]{figures/behavior.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/behavior.pdf}
   \caption{Examples of cooperative and uncoordinated behavior. (Left) desired, agents effectively choose different paths to collect different items. (Right) undesired, agents cover the same path to collect the same item.}
   \label{fig:behavior}
 \end{figure}
