@@ -649,7 +649,42 @@ The mean episode length $L_{mean}$ is calculated as:
 
 \section{Results and Evaluation}\label{sec:results}
 
+\paragraph{Performance comparison}
+The results -- \Cref{fig:results} -- shows that employing a centralized training (i.e., CTDE) approach allows the model to converge 
+ more rapidly -- in terms of episodes -- to a higher reward compared to a fully decentralized approach (i.e., DTDE). 
+%
+This difference becomes even more evident when considering the Mean Episode Length metric, where CTDE not only converges 
+ faster but also solves the task using shorter episodes than DTDE. 
+ 
+Additionally, we implemented another state-of-the-art algorithm, namely MAPPO, as a baseline for comparison. 
+%
+However, MAPPO performed worse than both CTDE and DTDE across both metrics -- yielding lower results and exhibiting less stability, 
+ as reflected in its higher standard deviation.
 
+Regarding the proposed neighbor-based approaches, it can be observed that both \emph{experience sharing} and 
+ \emph{NN averaging} enhance the performance of DTDE, achieving results comparable to CTDE while also increasing 
+ learning stability. 
+% 
+On the other hand, \emph{NN consensus} maintains performance levels similar to DTDE, which may be attributed to the 
+ simplicity of the implemented consensus policy. 
+%
+Nevertheless, it remains more stable and achieves better performance than MAPPO.
+
+\paragraph{Scalability}
+To evaluate the scalability of the learned policies, we conducted several experiments by increasing the number 
+ of agents -- specifically to 8, 16, and 32 -- and measuring the time required to complete the task 
+ (i.e., mean episode length). 
+
+The results -- \Cref{fig:time-eval} -- show that as the number of agents increases, DTDE exhibits both a higher mean time 
+ to solve the task and greater instability. 
+%
+In contrast, CTDE, NN averaging, and experience sharing maintain strong performance. 
+%
+Similar to the training phase, NN consensus does not achieve the same results as the other two neighbor-based 
+ approaches but remains on par with DTDE in terms of performance.
+
+
+\paragraph{Communication overhead}
 
 % \begin{itemize}
 % \item \textbf{Performance comparison:}
