@@ -333,11 +333,12 @@ This straightforward approach, among the earliest explored in MARL, often relies
 %
 Several algorithms have attempted to address these coordination challenges within the independent learner paradigm. 
 Basic decentralized Q-learning~\cite{tan1993multi} allows each agent to learn its Q-values independently but often converges to suboptimal joint policies due to a lack of coordination. 
-Subsequent work introduced heuristic-based extensions to improve coordination.
-Approaches like distributed Q-learning~\cite{lauer2000algorithm} incorporate optimism in Q-value updates and equilibrium selection mechanisms to mitigate the convergence to shadowed equilibria (i.e., equilibria that are unstable due to the independent learning processes). 
-Instead, algorithms such as hysteretic Q-learning~\cite{matignon2007hysteretic}, lenient Q-Learning~\cite{bloembergen2010lenient} and win-or-learn fast policy hill climbing~\cite{bowling2002multiagent} employ adaptive learning rates to address the issue of alternating exploration between agents, improving robustness and convergence.
+%Subsequent work introduced heuristic-based extensions to improve coordination.
+%Approaches like distributed Q-learning~\cite{lauer2000algorithm} incorporate optimism in Q-value updates and equilibrium selection mechanisms to mitigate the convergence to shadowed equilibria (i.e., equilibria that are unstable due to the independent learning processes). 
+%Instead, algorithms such as hysteretic Q-learning~\cite{matignon2007hysteretic}, lenient Q-Learning~\cite{bloembergen2010lenient} and win-or-learn fast policy hill climbing~\cite{bowling2002multiagent} employ adaptive learning rates to address the issue of alternating exploration between agents, improving robustness and convergence.
 %
-Empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
+%Empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
+Subsequent work introduced heuristic-based extensions to improve coordination, like distributed Q-learning~\cite{lauer2000algorithm}, hysteretic Q-learning~\cite{matignon2007hysteretic}, lenient Q-Learning~\cite{bloembergen2010lenient}, however empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
 While initially developed for tabular settings, some of these methods, like hysteretic Q-learning~\cite{palmer2017lenient} and lenient Q-learning, have been extended to deep reinforcement learning settings. 
 However, these independent approaches, even with deep learning, often exhibit instability and slow convergence in complex environments and fundamentally lack explicit mechanisms for inter-agent coordination. 
 %Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
