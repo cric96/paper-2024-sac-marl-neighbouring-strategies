@@ -235,8 +235,8 @@ Agents can exchange information with their neighbors in $\mathcal{G}$
 %
 The objective is typically to maximize the expected discounted sum of rewards $\sum{t=0}^{\infty} \gamma^t r^i_t$ for each agent $i$, 
 or some global reward function like the average reward over all agents.
-Formally, it can be defined as:
-\[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
+%Formally, it can be defined as:
+%\[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
 Agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function (also known as \emph{Q-value}). 
 The latter represents the expected cumulative discounted reward the agent will receive by taking action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and then following its policy $\pi^i$:
 
