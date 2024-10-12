@@ -496,27 +496,7 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
       }
   }
 \end{algorithm}
-\section{Experimental setup}\label{sec:experiments}
-
-To validate our approach, we developed a custom learning scenario using three state-of-the-art frameworks 
-  in RL and DL, namely: \emph{Ray}~\cite{DBLP:conf/osdi/MoritzNWTLLEYPJ18} 
-  (in particular, its module \emph{RLlib}~\cite{DBLP:conf/icml/LiangLNMFGGJS18}),
-  \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
-  and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
-
-We ran a total of $35$ training experiments, 
-namely: $5$ different methods %% TODO check how many ex are discussed
-  (centralized, distributed and the three neighbor strategies discussed).
-Each method was evaluated across 10 distinct random seeds to enhance the statistical robustness of the observed results.
-%
-Each experiment consisted of $50$ training episodes. 
-
-Furthermore, we ran $15$ evaluation experiments, namely: $5$ different methods and for each method 
-  we varied the number of agents ($8$, $16$ and $32$) to assess the metrics under various conditions.
-  In this case, for each experiment we ran $100$ evaluation episodes.
-
-All the experiments are publicly available and reproducible\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
-
+\section{Evaluation}\label{sec:experiments}
 \subsection{Simulated environment}
 The proposed multi-agent environment, which we design to evaluate the efficacy of the neighboring-based strategies,
  consists of a two-dimensional Euclidean space 
@@ -540,7 +520,6 @@ The action space for each agent is discrete,
 consisting of eight possible movements corresponding 
 to the cardinal and diagonal directions on a grid.
 %
-
 
 This setup was chosen as it presents a challenging coordination problem that requires agents to learn both individual target-seeking behaviors and collaborative strategies for reducing the overall retrivial time, 
 offering a suitable testbed for evaluating the effectiveness of the proposed neighbor-based decentralized training approaches.
@@ -574,6 +553,24 @@ where $I_a$ is the set of agents with intersecting action area.
 \paragraph{Final reward} The final reward is computed as the sum of all the subcomponents:
   \[ R = \psi + \zeta + \xi + \chi + \rho \]
   
+\subsection{Experimental setup}
+To validate our approach, we developed a custom learning scenario using three state-of-the-art frameworks 
+  in RL and DL, namely: \emph{Ray}~\cite{DBLP:conf/osdi/MoritzNWTLLEYPJ18} 
+  (in particular, its module \emph{RLlib}~\cite{DBLP:conf/icml/LiangLNMFGGJS18}),
+  \emph{Gymnasium}~\cite{DBLP:journals/corr/abs-2407-17032}
+  and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
+
+We ran a total of $35$ training experiments, 
+namely: $5$ different methods %% TODO check how many ex are discussed
+  (centralized, distributed and the three neighbor strategies discussed).
+Each method was evaluated across 10 distinct random seeds to enhance the statistical robustness of the observed results.
+%
+Each experiment consisted of $50$ training episodes. 
+%
+Furthermore, we ran $15$ evaluation experiments, namely: $5$ different methods and for each method 
+  we varied the number of agents ($8$, $16$ and $32$) to assess the metrics under various conditions.
+  In this case, for each experiment we ran $100$ evaluation episodes.
+All the experiments are publicly available and reproducible\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
 
 \subsection{Learning algorithm}
 In our experiments, we employed the well-known \emph{Deep Q-Learning} (DQN) algorithm implemented in RLlib.
@@ -653,7 +650,7 @@ The mean episode length $L_{mean}$ is calculated as:
 \end{figure}
 
 
-\section{Results and Evaluation}\label{sec:results}
+\subsection{Results}\label{sec:results}
 
 \paragraph{Performance comparison}
 The results -- \Cref{fig:results} -- shows that employing a centralized training (i.e., CTDE) approach allows the model to converge 
