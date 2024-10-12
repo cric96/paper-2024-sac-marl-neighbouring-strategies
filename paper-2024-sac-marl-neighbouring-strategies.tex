@@ -590,15 +590,15 @@ For the training batch size, we used a value of $32$, which balances computation
 A smaller batch size could lead to noisier updates, while a larger one might slow down training without
   significantly improving performance.
 %
-Additionally, we enabled two key features of the DQN algorithm, namely:
-  \begin{enumerate*}[label=(\roman*)]
-    \item \emph{Double Q-Learning}, to mitigate the overestimation bias that traditional Q-Learning algorithms are prone to. 
-      This is particularly important in multi-agent settings, where overestimation can lead to suboptimal policies due to 
-      the complex interactions between agents ; and
-    \item \emph{Dueling Q-Learning}, which separates the estimation of the state value from the state-dependent action advantages, 
-      enabling the agent to better distinguish between the value of being in a given state and the value of choosing 
-      specific actions within that state.
-  \end{enumerate*} 
+%Additionally, we enabled two key features of the DQN algorithm, namely:
+%  \begin{enumerate*}[label=(\roman*)]
+%    \item \emph{Double Q-Learning}, to mitigate the overestimation bias that traditional Q-Learning algorithms are prone to. 
+%      This is particularly important in multi-agent settings, where overestimation can lead to suboptimal policies due to 
+%      the complex interactions between agents ; and
+%    \item \emph{Dueling Q-Learning}, which separates the estimation of the state value from the state-dependent action advantages, 
+%      enabling the agent to better distinguish between the value of being in a given state and the value of choosing 
+%      specific actions within that state.
+%  \end{enumerate*} 
 
 \subsection{Evaluation metrics} 
 In our experiments, we employed two metrics to evaluate the performance of the learning
@@ -642,12 +642,7 @@ The mean episode length $L_{mean}$ is calculated as:
 \begin{figure}
   \centering
   \includegraphics[width=1\linewidth]{figures/behavior.pdf}
-  \caption{Wanted and unwanted behaviors.
-  On the left, the wanted behavior, the agents correctly cooperate to cover
-  two different items.
-  While, on the right, the agents do not correctly cooperate covering
-  the same item.
-  }
+  \caption{Examples of cooperative and uncoordinated behavior. (Left) desired, agents effectively choose different paths to collect different items. (Right) undesired, agents cover the same path to collect the same item.}
   \label{fig:behavior}
 \end{figure}
 
