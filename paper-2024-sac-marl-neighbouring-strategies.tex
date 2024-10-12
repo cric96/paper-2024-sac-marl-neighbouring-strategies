@@ -81,20 +81,22 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-Multi-agent deep reinforcement learning (MADRL) is rapidly emerging as a powerful extension of single-agent reinforcement learning, 
-enabling the training of both collaborative and competitive agents in several domains, like robotics, traffic management, and video games.
+Multi-agent deep reinforcement learning (MADRL) is rapidly emerging as a powerful paradigm for training intelligent agents in complex, multi-agent environments.
+%
+Extending beyond single-agent reinforcement learning, MADRL enables the development  of both collaborative and competitive agents in several domains, like robotics, traffic management, and video games.
 %
 The most widely adopted training paradigm in MADRL is centralized training with decentralized execution (CTDE), which has demonstrated significant effectiveness. 
 %
-However, it relies on a centralized learner, requiring agents to learn in an offline setting and execute online. To address this limitation, decentralized training methods have been introduced. 
+However, its reliance on a centralized learner necessitates that agents acquire policies offline and subsequently execute them online. 
+This inherent constraint motivates the exploration of decentralized training methodologies.
 %
 While these techniques offer greater flexibility, they tend to have slower convergence and can suffer from instability compared to centralized approaches.
 %
-This paper investigates the effectiveness of various neighbor-based decentralized training strategies based 
+Therefore, this paper investigates the effectiveness of various neighbor-based decentralized training strategies based 
   on the well-known Deep-Q Learning algorithm as a viable alternative to centralized training. 
 %  
 We evaluate experience sharing, k-nearest neighboring averaging, and k-nearest neighboring consensus methods 
-  in a custom multi-agent environment and compare their performance against centralized training
+  in a cooperative multi-agent environment and compare their performance against centralized training
   and totally decentralized training. 
 %  
 Our results show that neighbor-based methods can achieve comparable performance to centralized training 
@@ -194,16 +196,17 @@ Finally, \Cref{sec:conclusion} concludes the paper,
 summarizing the key findings and outlining potential future research directions.
 
 \section{Background and Motivation}\label{sec:background}
-MARL is an extension of a sequential decision-making process, 
-where multiple \emph{agents} interact with each other and a shared \emph{environment}.
-In particular, each agent in the system aims to maximize its own \emph{reward signal} (i.e., a scalar feedback signal),
-which is typically a function of the global state (sometime not known, making the system \emph{partial observable}) and the joint action taken by all agents.
+Multi-agent reinforcement learning (MARL) involves a group of \emph{agents} interacting with a shared \emph{environment}. 
 %
-In doing that, each agent perceive the environment through its own \emph{observation function},
-which maps the global state to the agent's local observation and perform an action based on its \emph{policy} (i.e., a mapping from observations to actions).
+At each timestep, agents receive \emph{observations} and select \emph{actions} according to their individual \emph{policies} (mappings from observations to actions). 
 %
-This chosen action is then combined with the actions of other agents forming a \emph{joint action},
-which is used to update the global state and reward.
+These individual actions combine to form a \emph{joint action}, which influences the environment's transition to a new state. 
+%
+Each agent then receives a scalar \emph{reward} signal, typically a function of the global state and joint action. 
+%
+The goal of each agent is to maximize its cumulative reward. 
+%
+Environments can be \emph{partially observable}, meaning agents may not have access to the full global state, only receiving local observations through their respective \emph{observation functions}.
  
 In this paper, we focus on cooperative MARL scenarios, 
 where agents must collaborate to achieve a common goal.
@@ -234,8 +237,7 @@ The objective is typically to maximize the expected discounted sum of rewards $\
 or some global reward function like the average reward over all agents.
 Formally, it can be defined as:
 \[ J(\{\pi^i\}) = \lim_{T \to \infty} \mathbb{E} \left[ \frac{1}{T} \sum_{t=0}^{T-1} \frac{1}{N} \sum_{i \in \mathcal{N}} R^i(s_t, a_t) \right] \]
-
-In doing this, agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function (also known as Q-value). 
+Agents typically use other function to estimate the value of taking an action in a given state, such as the action-value function (also known as \emph{Q-value}). 
 The latter represents the expected cumulative discounted reward the agent will receive by taking action $a \in \mathcal{A}$ in state $s \in \mathcal{S}$ and then following its policy $\pi^i$:
 
 \[ Q^i(s, a) = \mathbb{E}_{\pi^i} \left[ \sum_{t=0}^{\infty} \gamma^t r^i_{t+1} | s_0 = s, a_0 = a \right] \]
@@ -246,7 +248,9 @@ The latter represents the expected cumulative discounted reward the agent will r
 
 %where $\pi = \{\pi^i\}_{i \in N}$ represents the joint policy. 
 %The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
-Several algorithms aim to find the \emph{optimal} Q-value function, which maximizes the expected cumulative reward. One of the most popular among these is the Deep Q-learning algorithm.
+Several algorithms aim to find the \emph{optimal} Q-value function, which maximizes the expected cumulative reward. 
+%
+One of the most popular among these is the Deep Q-learning algorithm.
 \subsubsection{Deep Q-Learning Formalization}
 Deep Q-learning~\cite{DBLP:conf/l4dc/FanWXY20} utilizes a deep neural network, 
 often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
@@ -290,10 +294,10 @@ Two prominent paradigms are centralized training with decentralized execution (C
 In CTDE, a central learner trains all agents, 
 but execution of the learned policy is decentralized. 
 This process typically involves two phases:
-\begin{description}
-  \item[Offline training:] Agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
-  \item[Online execution:] Agents deploy the learned policy in the environment without further learning.
-\end{description}
+\begin{itemize}
+  \item \textit{Offline training:} Agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
+  \item \textit{Online execution:} Agents deploy the learned policy in the environment without further learning.
+\end{itemize}
 This approach offers several benefits.  
 Leveraging a centralized dataset allows for efficient learning, 
 potentially exploiting global information, 
@@ -307,15 +311,15 @@ The reliance on a central learner hinders adaptation to dynamic environments or 
 \paragraph{Decentralized Training with Decentralized Execution (DTDE)}
 DTDE eliminates the central learner; each agent learns independently from its own experiences.
 Inter-agent cooperation and communication can be incorporated during both training and execution. 
-Unlike CTDE, training and execution phases are not necessarily separate---
-simultaneous learning and execution allow for adaptation to changing environments or tasks at runtime.
+Unlike CTDE, training and execution phases are not necessarily separate---simultaneous learning and execution allow for adaptation to 
+changing environments or tasks at runtime.
 %
 Key advantages of DTDE include scalability with the number of agents and adaptability to dynamic environments.
 %
-However, DTDE faces challenges. 
-Convergence time is often longer compared to centralized training. 
-The lack of central coordination can lead to instability and difficulties in differentiating agents and their environmental interactions. 
-Online learning in DTDE can introduce non-stationarity if agents do not account for other agents' evolving policies during training, 
+However, DTDE also presents several challenges to overcome, like: 
+i) convergence time is often longer compared to centralized training. 
+ii) The lack of central coordination can lead to instability and difficulties in differentiating agents and their environmental interactions; and 
+iii) online learning in DTDE can introduce non-stationarity if agents do not account for other agents' evolving policies during training, 
 as the environment effectively changes from each agent's perspective.
 
 \subsection{State of the Art}\label{sec:sota}
