@@ -673,7 +673,7 @@ where $L_i$ is length of $i$-th episode.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.7\linewidth]{figures/behavior.pdf}
+  \includegraphics[width=0.8\linewidth]{figures/behavior.pdf}
   \caption{Examples of cooperative and uncoordinated behavior. (Left) desired, agents effectively choose different paths to collect different items. (Right) undesired, agents cover the same path to collect the same item.}
   \label{fig:behavior}
 \end{figure}
@@ -694,10 +694,10 @@ However, MAPPO performed worse than both CTDE and DTDE across both metrics -- yi
  as reflected in its higher standard deviation.
 
 Regarding the proposed neighbor-based approaches, it can be observed that both \emph{experience sharing} and 
- \emph{NN averaging} enhance the performance of DTDE, achieving results comparable to CTDE while also increasing 
+ k-NN averaging enhance the performance of DTDE, achieving results comparable to CTDE while also increasing 
  learning stability. 
 % 
-On the other hand, \emph{NN consensus} maintains performance levels similar to DTDE, which may be attributed to the 
+On the other hand, k-NN consensus maintains performance levels similar to DTDE, which may be attributed to the 
  simplicity of the implemented consensus policy. 
 %
 Nevertheless, it remains more stable and achieves better performance than MAPPO.
@@ -705,44 +705,41 @@ Nevertheless, it remains more stable and achieves better performance than MAPPO.
 \paragraph{Scalability}
 To evaluate the scalability of the learned policies, we conducted several experiments by increasing the number 
  of agents -- specifically to 8, 16, and 32 -- and measuring the time required to complete the task 
- (i.e., mean episode length). 
+ (i.e., $L_mean$). 
 
 The results -- \Cref{fig:time-eval} -- show that as the number of agents increases, DTDE exhibits both a higher mean time 
  to solve the task and greater instability. 
 %
-In contrast, CTDE, NN averaging, and experience sharing maintain strong performance. 
+In contrast, CTDE, k-NN averaging, and experience sharing maintain strong performance. 
 %
-Similar to the training phase, NN consensus does not achieve the same results as the other two neighbor-based 
+Similar to the training phase, k-NN consensus does not achieve the same results as the other two neighbor-based 
  approaches but remains on par with DTDE in terms of performance.
-
-
 \paragraph{Communication overhead}
 
-The proposed neighbor-based approaches, particularly NN averaging and experience sharing, achieve performance
+The proposed neighbor-based approaches, particularly k-NN averaging and experience sharing, achieve performance
  comparable to CTDE while maintaining a decentralized learning structure similar to DTDE. 
 % 
-However, this entails a communication overhead due to the information agents must exchange with their neighbors
+However, this entails a communication overhead at runtime due to the information agents must exchange with their neighbors
  -- see \Cref{fig:scalability}. 
 %
-For NN consensus, the overhead remains constant, as each agent selects the best neighbor and only exchanges 
- information with that agent, meaning the amount of data shared does not increase with the number of neighbors. 
+For k-NN consensus, the overhead remains constant, as each agent selects the best neighbor and only exchanges 
+ information with that agent, 
+ meaning the amount of data shared does not increase with the number of neighbors. 
 % 
-In contrast, for NN averaging and experience sharing, the overhead scales linearly. 
+In contrast, for k-NN averaging and experience sharing, the overhead scales linearly. 
 %
 Specifically, the growth in overhead for experience sharing is minimal, as the agents' experiences require very 
  little memory. 
 %
-For NN averaging, however, this increase is more significant, as even a moderately complex neural network 
+For k-NN averaging, however, this increase is more significant, as even a moderately complex neural network 
  has a substantially larger memory footprint.
 % 
 Nevertheless, for all approaches, the overhead remains within a few megabytes (less than 25MB) when dealing with 
  up to 10 neighboring agents.
 %
 This makes all approaches feasible, although in scenarios with limited communication resources, experience 
- sharing would be the optimal choice, as it provides performance similar to NN averaging but with 
+ sharing would be the optimal choice, as it provides performance similar to k-NN averaging but with 
  much lower overhead.
-
-
 % \begin{itemize}
 % \item \textbf{Performance comparison:}
 % \begin{itemize}
@@ -769,8 +766,9 @@ This makes all approaches feasible, although in scenarios with limited communica
   \centering
   \includegraphics[width=0.8\linewidth]{figures/episode_reward_mean.pdf}
   \includegraphics[width=0.8\linewidth]{figures/episode_len_mean.pdf}
-  \caption{Data collected during training. 
-  We can see that two of the three neighbor-based strategies achieve performance similar to CTDE.
+  \caption{Training performance of neighbor-based decentralized training strategies compared to centralized (CTDE) and fully decentralized (DTDE) approaches. 
+  Two of the three neighbor-based methods achieve performance comparable to CTDE, 
+  demonstrating the effectiveness of these methods in achieving scalability and coordination.
   }
   \label{fig:results}
 \end{figure}
@@ -795,9 +793,9 @@ This makes all approaches feasible, although in scenarios with limited communica
       %\caption{End of the simulation.}
       % \label{fig:zones3}
   \end{subfigure}
-  \caption{ Data collected during evaluation.
-  We can see how, increasing the number of agents, the DTDE methods become more unstable and takes more 
-  steps to solve the task, while neighbor-based strategies maintain -- on average -- results comparable to CTDE.
+  \caption{Scalability comparison of training methods in the evaluation phase.
+  DTDE performance degrades with increasing agent numbers, 
+  while CTDE and neighbor-based methods maintain comparable efficiency.
   }
   \label{fig:time-eval}
 \end{figure*}
@@ -805,7 +803,7 @@ This makes all approaches feasible, although in scenarios with limited communica
 \begin{figure}
   \centering
   \includegraphics[width=0.8\linewidth]{figures/scalability.pdf}
-  \caption{Communication overhead due to different neighboring strategies.
+  \caption{Communication overhead (in MB) for different neighboring strategies as a function of the number of neighbors.
   }
   \label{fig:scalability}
 \end{figure}
@@ -813,9 +811,9 @@ This makes all approaches feasible, although in scenarios with limited communica
 
 \section{Conclusion}\label{sec:conclusion}
 This paper proposes several neighbor-based strategies to achieve decentralized multi-agent learning (i.e., DTDE ) with performance 
- comparable to centralized approaches (i.e., CTDE). 
+ comparable to centralized approaches (i.e., CTDE) therefore enabling online adaptation.
 %
-Specifically, we introduce three approaches, namely: K-NN averaging, K-NN consensus and experience sharing
+Specifically, we discuss three approaches, namely: k-NN averaging, k-NN consensus and experience sharing
  which have been evaluated against various baselines, including CTDE, DTDE based on DQN, and MAPPO. 
 %
 The results show that two of the three proposed methods significantly enhance DTDE performance, 
@@ -830,10 +828,10 @@ Furthermore, we analyzed the communication overhead,
 
 Future works may include several promising directions, namely:
 \begin{enumerate*}[label=(\roman*)]
-  \item explore the implementation of more advanced consensus algorithms to determine if this strategy can also achieve 
+  \item explore the implementation of more advanced consensus algorithms (e.g., deep QD-learning) to determine if this strategy can also achieve 
    results comparable to the other two;
   \item develop more sophisticated communication protocols to further reduce communication overhead; and
-  \item test these approaches in a wider range of, and more complex, scenarios than the one considered in this paper.
+  \item test these approaches in a wider range and more complex scenarios than the one considered in this paper (e.g., vectorized multi-agent environment~\cite{bettini2022vmas}).
 \end{enumerate*} 
 
 \bibliographystyle{ACM-Reference-Format}
