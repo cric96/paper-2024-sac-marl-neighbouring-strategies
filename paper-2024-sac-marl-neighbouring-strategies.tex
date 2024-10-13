@@ -286,7 +286,8 @@ The specific form of the multi-agent Q-function and the update rules depend on t
   \includegraphics[width=0.49\linewidth]{figures/CTDE.pdf}
   %\vskip 1 mm
   \includegraphics[width=0.49\linewidth]{figures/DTDE.pdf}
-  \caption{Graphical representation of CTDE (left) and DTDE (right) in MARL.}
+  \caption{Graphical representation of CTDE (left) and DTDE (right) in MARL.
+  For simplicity, only two agents are represented. However, the model can easily be extended to the general case of N agents.}
   \label{fig:learning_paradigms}
 \end{figure}
 Multi-agent learning can be categorized based on the training scheme and the information accessibility for agents. 
@@ -673,7 +674,7 @@ where $L_i$ is length of $i$-th episode.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/behavior.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/behavior.pdf}
   \caption{Examples of cooperative and uncoordinated behavior. (Left) desired, agents effectively choose different paths to collect different items. (Right) undesired, agents cover the same path to collect the same item.}
   \label{fig:behavior}
 \end{figure}
@@ -764,8 +765,8 @@ This makes all approaches feasible, although in scenarios with limited communica
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/episode_reward_mean.pdf}
-  \includegraphics[width=0.8\linewidth]{figures/episode_len_mean.pdf}
+  \includegraphics[width=0.75\linewidth]{figures/episode_reward_mean.pdf}
+  \includegraphics[width=0.75\linewidth]{figures/episode_len_mean.pdf}
   \caption{Training performance of neighbor-based decentralized training strategies compared to centralized (CTDE) and fully decentralized (DTDE) approaches. 
   Two of the three neighbor-based methods achieve performance comparable to CTDE, 
   demonstrating the effectiveness of these methods in achieving scalability and coordination.
@@ -802,7 +803,7 @@ This makes all approaches feasible, although in scenarios with limited communica
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/scalability.pdf}
+  \includegraphics[width=0.7\linewidth]{figures/scalability.pdf}
   \caption{Communication overhead (in MB) for different neighboring strategies as a function of the number of neighbors.
   }
   \label{fig:scalability}
