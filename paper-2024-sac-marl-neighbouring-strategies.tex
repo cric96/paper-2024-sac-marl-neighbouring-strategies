@@ -81,14 +81,14 @@
 \renewcommand{\shortauthors}{A. Author et al.}
 
 \begin{abstract}
-Multi-agent deep reinforcement learning (MADRL) is rapidly emerging as a powerful paradigm for training intelligent agents in complex, multi-agent environments.
+Multi-agent deep reinforcement learning (MADRL) has demonstrated significant potential as a framework for developing autonomous agents capable of operating within complex, multi-agent environments.  
 %
-Extending beyond single-agent reinforcement learning, MADRL enables the development  of both collaborative and competitive agents in several domains, like robotics, traffic management, and video games.
+Extending the single-agent reinforcement learning framework, MADRL enables the development  of both collaborative and competitive agents a wide range of diverse domains, like robotics, traffic management, and video games.
 %
-The most widely adopted training paradigm in MADRL is centralized training with decentralized execution (CTDE), which has demonstrated significant effectiveness. 
+Centralized training with decentralized execution (CTDE) has emerged as the predominant training paradigm, which has demonstrated significant effectiveness in learning complex policies. 
 %
 However, its reliance on a centralized learner necessitates that agents acquire policies offline and subsequently execute them online. 
-This inherent constraint motivates the exploration of decentralized training methodologies.
+This constraint motivates the exploration of decentralized training methodologies.
 %
 While these techniques offer greater flexibility, they tend to have slower convergence and can suffer from instability compared to centralized approaches.
 %
@@ -144,11 +144,11 @@ Our results show that neighbor-based methods can achieve comparable performance 
 \section{Introduction}
 The increasing complexity of real-world systems, from robotic swarms to smart grids, demands intelligent control strategies capable of adapting to dynamic and often unpredictable environments.
 %
-In this direction, \emph{reinforcement learning} (RL)~\cite{sutton2018reinforcement} has emerged as a powerful paradigm for training agents that interact with their environment and learn optimal policies through trial and error.
+In this direction, \emph{reinforcement learning} (RL)~\cite{sutton2018reinforcement} has emerged as a prominent paradigm for training agents that interact with their environment and learn optimal policies through trial and error.
 %
 Moving beyond single-agent settings, \emph{multi-agent reinforcement learning} (MARL)~\cite{bucsoniu2010multi} extends RL to scenarios where multiple agents must collaborate or compete to achieve a common goal.
 %
-Recent advances in deep learning have further advanced the field, 
+Recent advances in deep learning (DL) have further advanced the field, 
 enabling the training of complex policies in high-dimensional state and action spaces, 
 leading to the emergence of \emph{multi-agent deep reinforcement learning} (MADRL)~\cite{gronauer2022multi}.
 %
@@ -204,14 +204,16 @@ These individual actions combine to form a \emph{joint action}, which influences
 %
 Each agent then receives a scalar \emph{reward} signal, typically a function of the global state and joint action. 
 %
-The goal of each agent is to maximize its cumulative reward. 
+The goal of each agent is to maximize its \emph{cumulative long-term reward}. 
 %
-Environments can be \emph{partially observable}, meaning agents may not have access to the full global state, only receiving local observations through their respective \emph{observation functions}.
+Environments can be \emph{partially observable}, 
+meaning agents may not have access to the full global state, 
+only receiving local observations through their respective \emph{observation functions}.
  
 %In this paper, we focus on cooperative MARL scenarios, 
 %where agents must collaborate to achieve a common goal.
 %In the following, we provide an overview of the key concepts in MARL, 
-%including the formalization of the problem, the deep Q-learning algorithm, and the training paradigms used in the literature.
+%including the formalization of the problem, the Deep Q-Learning algorithm, and the training paradigms used in the literature.
 \subsection{Formalization}
 Since MARL is a broad field, it is essential to provide a formalization to guide the discussion.
 In this paper, we consider partially observable networked markov decision process (PONMDP)~\cite{DBLP:journals/tac/AdlakhaLG12} as a tuple $(\mathcal{G}, \mathcal{S}, \mathcal{A}, \mathcal{O}, \mathcal{P}, \mathcal{R}, \gamma)$, where
@@ -250,17 +252,17 @@ The latter represents the expected cumulative discounted reward the agent will r
 %The goal in collaborative MARL is often to find a joint policy that maximizes this global average Q-value or a similar global objective.
 Several algorithms aim to find the \emph{optimal} Q-value function, which maximizes the expected cumulative reward. 
 %
-One of the most popular among these is the Deep Q-learning algorithm.
+One of the most popular among these is the Deep Q-Learning algorithm.
 \subsubsection{Deep Q-Learning Formalization}
-Deep Q-learning~\cite{DBLP:conf/l4dc/FanWXY20} utilizes a deep neural network, 
+Deep Q-Learning~\cite{DBLP:conf/l4dc/FanWXY20} utilizes a deep neural network, 
 often referred to as a Q-network, to approximate the action-value function $Q(s, a)$. 
 This network takes the state $s$ as input and outputs a vector of Q-values, one for each possible action $a \in \mathcal{A}$.  
 The optimal action-value function, denoted $Q^*(s, a)$, satisfies the Bellman optimality equation:
 
 \[ Q^*(s, a) = \mathbb{E}_{s' \sim \mathcal{P}} \left[ r + \gamma \max_{a'} Q^*(s', a') | s, a \right] \]
-
-where $\mathcal{P}$ is the state transition probability distribution.  
-Deep Q-learning aims to train the Q-network to approximate $Q^*(s, a)$ by minimizing the loss function:
+%
+where $\mathcal{P}$ is the state transition probability distribution and $r$ is the immediate reward received after taking action $a$ in state $s$.  
+Deep Q-Learning aims to train the Q-network to approximate $Q^*(s, a)$ by minimizing the loss function:
 
 \[ \mathcal{L}(\theta) = \mathbb{E}_{(s, a, r, s') \sim \mathcal{D}} \left[ \left( r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta) \right)^2 \right] \]
 
@@ -269,8 +271,8 @@ and $\mathcal{D}$ is the experience replay buffer, a collection of past experien
 %
 In the multi-agent setting, each agent $i$ has its own Q-network $Q^i(o^i, a^i; \theta^i)$ that takes its local observation $o^i$ as input.  
 For centralized training, the global state $s$ can be used as input. 
-The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed Deep Q-learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
-%For example, in independent Deep Q-learning--more details in \Cref{sec:sota}--each agent updates its Q-network independently using its local reward $r^i$:
+The specific form of the multi-agent Q-function and the update rules depend on the chosen MARL algorithm (e.g., distributed Deep Q-Learning~\cite{ong2015distributed}, value decomposition methods~\cite{DBLP:conf/icml/SonKKHY19}).  
+%For example, in independent Deep Q-Learning--more details in \Cref{sec:sota}--each agent updates its Q-network independently using its local reward $r^i$:
 %\begin{equation}
 %  \resizebox{\linewidth}{!}{$
 %  \mathcal{L}^i(\theta^i) = \mathbb{E}_{(o^i, a^i, r^i, o'^i) \sim \mathcal{D}^i} \left[ \left( r^i + \gamma \max_{a'^i} Q^i(o'^i, a'^i; \theta^{i-}) - Q^i(o^i, a^i; \theta^i) \right)^2 \right]
@@ -295,8 +297,8 @@ In CTDE, a central learner trains all agents,
 but execution of the learned policy is decentralized. 
 This process typically involves two phases:
 \begin{enumerate}
-  \item \textit{Offline training:} Agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
-  \item \textit{Online execution:} Agents deploy the learned policy in the environment without further learning.
+  \item \textit{Offline training:} agents interact with a simulator or environment, gathering experience data used to update the central learner's policy.
+  \item \textit{Online execution:} agents deploy the learned policy in the environment without further learning.
 \end{enumerate}
 This approach offers several benefits.  
 Leveraging a centralized dataset allows for efficient learning, 
@@ -312,13 +314,13 @@ The reliance on a central learner hinders adaptation to dynamic environments or 
 DTDE eliminates the central learner; each agent learns independently from its own experiences.
 Inter-agent cooperation and communication can be incorporated during both training and execution. 
 Unlike CTDE, training and execution phases are not necessarily separate---simultaneous learning and execution allow for adaptation to 
-changing environments or tasks at runtime.
+change environments or tasks at runtime.
 %
 Key advantages of DTDE include scalability with the number of agents and adaptability to dynamic environments.
 %
 However, DTDE also presents several challenges to overcome, like: 
-i) convergence time is often longer compared to centralized training. 
-ii) The lack of central coordination can lead to instability and difficulties in differentiating agents and their environmental interactions; and 
+i) convergence time is often longer compared to centralized training; 
+ii) the lack of central coordination can lead to instability and difficulties in differentiating agents and their environmental interactions; and 
 iii) online learning in DTDE can introduce non-stationarity if agents do not account for other agents' evolving policies during training, 
 as the environment effectively changes from each agent's perspective.
 
@@ -339,7 +341,9 @@ Basic decentralized Q-learning~\cite{tan1993multi} allows each agent to learn it
 %
 %Empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
 Subsequent work introduced heuristic-based extensions to improve coordination, like distributed Q-learning~\cite{lauer2000algorithm}, hysteretic Q-learning~\cite{matignon2007hysteretic}, lenient Q-Learning~\cite{bloembergen2010lenient}, however empirical comparisons of these algorithms highlight the trade-offs in performance across various MARL tasks and coordination challenges~\cite{matignon2012independent}. 
-While initially developed for tabular settings, some of these methods, like hysteretic Q-learning~\cite{palmer2017lenient} and lenient Q-learning, have been extended to deep reinforcement learning settings. 
+While initially developed for tabular settings, some of these methods, like hysteretic Q-learning~\cite{palmer2017lenient},
+%and lenient Q-learning, 
+have been extended to deep reinforcement learning settings. 
 However, these independent approaches, even with deep learning, often exhibit instability and slow convergence in complex environments and fundamentally lack explicit mechanisms for inter-agent coordination. 
 %Consequently, more sophisticated MARL algorithms have been developed that explicitly account for the interactions and policies of other agents to facilitate more effective coordination.
 \subsubsection{Neighboring-Based Methods}
@@ -403,7 +407,7 @@ enabling online adaptation and robust performance in complex multi-agent environ
 \section{Neighboring-Based Distributed Learning Strategies}\label{sec:neighboring}
 This section introduces three neighboring-based distributed learning strategies for multi-agent reinforcement learning.
 These strategies leverage local interactions between agents to improve learning efficiency and coordination.
-For this investigation, we focus on deep Q-learning as the underlying learning algorithm,
+For this investigation, we focus on Deep Q-Learning as the underlying learning algorithm,
 and we consider the following strategies: k-nearest neighbor averaging, k-nearest neighbor consensus, and experience sharing.
 
 \paragraph{K-Nearest Neighbor Definition}
@@ -416,15 +420,15 @@ If no path exists between $i$ and $j$, we set $d(i,j) = \infty$.
 %
 Then, the set of $k$-nearest neighbors of agent $i$ is defined as:
 $$ \mathcal{N}_k(i) = { j \in N \setminus {i} \mid \text{rank}(d(i,j)) \leq k } $$
-where $\text{rank}(d(i,j))$ denotes the rank of the distance $d(i,j)$ among all distances from agent $i$ to other agents in $N \setminus {i}$, sorted in ascending order (e..g, $\text{rank}(d(i,j)) = 1$ for the smallest distance).
+where $\text{rank}(d(i,j))$ denotes the rank of the distance $d(i,j)$ among all distances from agent $i$ to other agents in $N \setminus {i}$, sorted in ascending order (e.g, $\text{rank}(d(i,j)) = 1$ for the smallest distance).
 Ties can be broken arbitrarily.
 
 \paragraph{K-Nearest Neighbor Averaging}
 \sloppy
-This approach averages an agent's Q-values with those of its nearest neighbors. 
-Each agent maintains a local Q-network and shares its Q-values with its neighbors. 
+%This approach averages an agent's Q-values with those of its nearest neighbors. 
+In this strategy, each agent maintains a local Q-network and shares its Q-values with its neighbors.
 The neighbors average the received Q-values and use the result to update their own Q-networks. 
-This leverages the collective knowledge of neighboring agents to improve learning.
+This approach allows agents to learn from their neighbors' experiences, potentially improving learning efficiency and coordination.
 %
 Formally, giving $\theta^t_i, i \in N$ the parameters of the Q-networks of the agent $i$ at the time $t$,
 the update rule for agent $i$ at time $t+1$ is:
@@ -437,22 +441,29 @@ In case of homogeneous agents (i.e., when all agents have the same action and ob
 the goal of learning is to find a common policy that all agents can follow.
 This approach is typically used in large-scale systems where agents are identical and need to reach a consensus---see~\cite{DBLP:conf/eusipco/BaldazoPZ19}.
 %
-In this case, instead of forcing a common policy, we can let agents learn independently and then select the best-performing agent as the reference for the others, leading eventually to a consensus on the best same policy.
+Instead of directly enforcing a shared policy, 
+we allow each agent to learn independently and periodically select the best-performing agent within its neighborhood as a reference. 
+This approach facilitates decentralized exploration while promoting consensus towards a high-performing policy.
 %
-In this way, each agent $i$ continue to learn independently, but at each iteration, it updates its Q-network using the Q-values of the best-performing agent in its neighborhood.
+Formally, Let $R_i(t)^n$ be the average reward obtained by agent $i$ over the last $n$ episodes, namely
+$R_i(t)^n = \frac{1}{n} \sum_{k=t-n}^{t} r_i(k)$.
+At each time step $t$, 
+each agent $i$ identifies the best-performing neighbor $b_i(t)$ within its $k$-neighborhood $\mathcal{N}_i^k$:
+
+$$b_i(t) = \underset{j \in \mathcal{N}_k(i)}{\operatorname{argmax}} R_j(t)^n$$
 %
-The best performing agent is selected based on the average reward it has received in the last $n$ episodes.
-Formally, the update rule for agent $i$ at time $t+1$ is:
-\begin{equation}
-  \theta^{t+1}_i \leftarrow \theta^t_{\text{best}}
-\end{equation}
-where $\theta^t_{\text{best}}$ is the Q-network of the best-performing agent in the neighborhood $\mathcal{N}_k(i)$ at time $t$.
+Agent $i$ then updates its Q-network parameters $\theta_i$ using the parameters of the best-performing neighbor, namely:
+$\theta_i^{t+1} \leftarrow \theta_{b_i(t)}^t$.
+%
+This process repeats at every consensus update interval.  
+Choosing an appropriate interval balances independent exploration with consensus convergence.
 
 \paragraph{Experience Sharing}
 Experience sharing is a simple yet effective method for distributed learning.
 This approach is typically used in centralized training to improve sample efficiency and learning stability~\cite{marl-book}.
 In our distributed setting, each agent maintains its own experience replay buffer, 
 but it also shares a fraction of its experiences with its neighbors.
+%
 This allows agents to learn from each other's experiences, 
 potentially accelerating learning and improving coordination because agents can learn from each other's mistakes and successes.
 %
@@ -463,15 +474,16 @@ The update rule for agent $i$ at time $t+1$ is:
   \mathcal{D}^{t+1}_i = \mathcal{D}^t_i \cup \bigcup_{j \in \mathcal{N}_k(i)} \beta \mathcal{D}^t_j
 \end{equation}
 \paragraph{Neighboring-Based Training with Deep Q-Learning}
-The neighboring-based training strategies can be integrated with deep Q-learning to enable distributed learning in multi-agent settings.
+\sloppy
+The neighboring-based training strategies can be integrated with Deep Q-Learning to enable distributed learning in multi-agent settings.
 %
-The algorithm follow the same structure as the deep Q-learning algorithm, 
-but with the addition of the neighboring-based intereactions.
+The algorithm follow the same structure as the Deep Q-Learning algorithm, 
+but with the addition of the neighboring-based interactions.
 %
 This may happen with a different frequency for each strategy, 
 depending on the communication overhead and the desired level of coordination.
-
-In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration of the neighboring-based strategies with deep Q-learning.
+%
+In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration of the neighboring-based strategies with Deep Q-Learning.
 \begin{algorithm}
   \caption{Neighboring-Based Deep Q-Learning}
   \label{alg:neighbor_dqn}
@@ -500,30 +512,31 @@ In \Cref{alg:neighbor_dqn} we provide a detailed description of the integration 
 \end{algorithm}
 \section{Evaluation}\label{sec:experiments}
 This section presents the experimental setup and evaluation metrics used to assess the performance of the proposed neighboring-based training strategies.
+%
 All the experiments and data produced are reproducible and publicly available\footnote{\url{https://anonymous.4open.science/r/experiments-2024-SAC-marl-neighbouring-strategies-4B8F}}.
 \subsection{Simulated environment}
-The proposed multi-agent environment is a variant of the ``gather the items'' scenario, designed to study the impact of neighborhood strategies. 
+The proposed multi-agent environment is a variant of the ``gather the items'' scenario, 
+designed to study the impact of neighborhood strategies. 
 It consists of a 2D Euclidean space populated by $A$ agents and $T$ targets, 
 initially placed at random locations.
-%
-The objective is for the agents to collectively capture all targets, 
-at which point the environment episode terminates successfully.  
+The objective is for the agents to work together to capture all targets, resulting in a successful termination of the environment episode.
 A maximum time limit of $T_{max} = 300$ time steps is enforced to prevent indefinite episodes.
 
 At each time step $t$, each agent $a$ receives an observation $o_a^t$ composed of the following elements:
 \begin{itemize}
-  \item \emph{Neighborhood perception}:  Agent $a$ perceives the relative positions (distance and direction) of its $A_v$ nearest neighboring agents. 
+  \item \emph{Neighborhood perception}: an agent $a$ perceives the relative positions (distance and direction) of its $A_v$ (paramers of the environment) the nearest neighboring agents. 
   This information is represented as a set $\mathcal{V}_a^t = \{(d_{aj}^t, \theta_{aj}^t) | j \in \text{Nearest } A_v \text{ agents}\}$, 
   where $d_{aj}^t$ is the Euclidean distance between agent $a$ and agent $j$ at time $t$, and $\theta_{aj}^t$ is the angle between the vector pointing from agent $a$ to agent $j$ and a fixed reference axis.
-  \item \emph{Target perception}: Agent $a$ perceives the relative positions (distance and direction) of its $T_v$ nearest targets. 
+  \item \emph{Target perception}: am agent $a$ perceives the relative positions (distance and direction) of its $T_v$ (parameter of the environment) the nearest targets. 
   This is represented as a set $\mathcal{T}_a^t = \{(d_{ak}^t, \theta_{ak}^t) | k \in \text{Nearest } T_v \text{ targets}\}$, with $d_{ak}^t$ and $\theta_{ak}^t$ defined analogously to the neighborhood perception.
-  \item \emph{Memory}: Agent $a$ maintains a memory $\mathcal{H}_a^t$ of past perceptions, storing the neighborhood and target perceptions from the previous $H_t$ time steps. Formally, $\mathcal{H}_a^t = \{\mathcal{N}_a^{t-\tau}, \mathcal{T}_a^{t-\tau} | \tau = 1, \dots, H_t\}$. 
+  \item \emph{Memory}: an agent $a$ maintains a memory $\mathcal{H}_a^t$ of past perceptions, storing the neighborhood and target perceptions from the previous $H_t$ time steps. Formally, $\mathcal{H}_a^t = \{\mathcal{N}_a^{t-\tau}, \mathcal{T}_a^{t-\tau} | \tau = 1, \dots, H_t\}$. 
   This can be represented as a tensor of shape $(H_t, A_v + T_v, 2)$, where the last dimension represents the relative distance and angle for each perceived agent or target.
 \end{itemize}
 The complete observation $o_a^t$ at time $t$ for agent $a$ is thus given by $o_a^t = (\mathcal{N}_a^t, \mathcal{T}_a^t, \mathcal{H}_a^t)$.
 
 Communication between agents is restricted to a neighborhood $\mathcal{C}_a^t \subseteq \mathcal{N}_a^t$ 
-and depends on a communication graph $\mathcal{G}$.
+and depends on a communication graph $\mathcal{G}$ that defines the communication links between agents. In this work, the graph is based on a k-nearest neighbor topology, 
+where each agent communicates with its $k$ (parameter of the simulation) nearest neighbors.
 %
 This communication enables the exchange of information such as Q-values or experiences 
 using on of the neighboring-based strategies discussed in \Cref{sec:neighboring}.
@@ -536,35 +549,35 @@ to minimize retrieval time.
 %
 It serves as a suitable testbed for evaluating the effectiveness 
 of neighbor-based decentralized training approaches.
+
 \subsubsection{Reward function}
 In the proposed environment, we design a reward function that both consider the individual performance of each agent (e.g., avoid collision) and the global performance of the team (e.g., collect items in the shortest time possible).
-In the following, we describe the components of the reward function:
-\paragraph{Collisions} Agents are penalized when their action area intersect. This penalty is proportional to the number of agents involved in a collision:
+In the following, we describe the components of the reward function for each agent $a$ at time $t$.
+
+\paragraph{Collisions.} Agents are penalized when their action area intersect. This penalty is proportional to the number of agents involved in a collision:
   \[ \psi = \begin{cases}
     0 & \text{if no intersections} \\
     -2 \cdot |I_a| & \text{otherwise}
   \end{cases} \]
 where $I_a$ is the set of agents with intersecting action area.
 
-\paragraph{Time step} Agents are penalized at each time step by a constant value $\sigma$ defined as
+\paragraph{Time step.} Agents are penalized at each time step by a constant value $\sigma$ defined as
     an hyperparameter, to encourage them to complete the task as quickly as possible.
-    \[ \zeta = - \sigma \]
  
-\paragraph{Moving towards items} Each agent $a$ is rewarded if it moves towards one of the visible target items, discouraging agents from wandering aimlessly.
+\paragraph{Moving towards items.} Each agent $a$ is rewarded if it moves towards one of the visible target items, discouraging agents from wandering aimlessly.
     \[ \xi = (max_{i \in V_{items}} d(p_a^{t+1}, p_i^{t+1}) - d(p_a^{t}, p_i^{t})) \cdot \delta\]
     Where $p_a^t$ is the position of the agent $a$ at time t (similarly for $p_i^{t}$ regarding items),
     $\delta$ is a scalar hyperparameter used to tune the importance of this component and
     $V_{items}$ is the set of visible items.
-\paragraph{Moving away from agents} Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$). This strategy encourages agents to avoid clustering and explore the environment more effectively.
+\paragraph{Moving away from agents.} Each agent $a_i$ is rewarded if it increases the distance from its neighbors ($N_{a_i}$). This strategy encourages agents to avoid clustering and explore the environment more effectively.
     \[ \chi = \frac{1}{2|N_{a_i}|} \cdot \sum_{a_j \in N_{a_i}} d(p_{a_i}^{t+1}, p_{a_j}^{t+1}) - d(p_{a_i}^{t}, p_{a_j}^{t}) \]
 
-\paragraph{Collecting items} Each agent is rewarded for any collected visible items ($C_i$ is the set of collected items), 
+\paragraph{Collecting items.} Each agent is rewarded for any collected visible items ($C_i$ is the set of collected items), 
     whether the item was collected by  the agent itself or by another agent, this strategy encourages agents 
-    to develop cooperative behaviors.
-    \[ \rho = 100 \cdot |C_i| \]
+    to develop cooperative behaviors, namely:
+    $\rho = 100 \cdot |C_i|$
 
-\paragraph{Final reward} The final reward is computed as the sum of all the subcomponents:
-  \[ R = \psi + \zeta + \xi + \chi + \rho \]
+\paragraph{Final reward.} The final reward is computed as the sum of all the subcomponents, namely: $ r^a_t = \psi - \sigma + \xi + \chi + \rho $
   
 \subsection{Experimental setup}
 The described environment was implemented using the \emph{Gymnasium} framework~\cite{DBLP:journals/corr/abs-2407-17032}.
@@ -573,35 +586,42 @@ Moreover, we employed the following libraries to implement the learning algorith
   and \emph{PyTorch}~\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19}.
 
 We ran a total of $42$ training experiments, 
-namely: $6$ different methods %% TODO check how many ex are discussed
-  (centralized, distributed and the three neighbor-based strategies discussed).
+namely: $6$ different methods 
+(centralized, distributed and the three neighbor-based strategies discussed).
 Each method was evaluated across 10 distinct random seeds to enhance the statistical robustness of the observed results.
 %
 Each experiment consisted of $50$ training episodes. 
+In these episodes, we fix the number of agents to $4$, $A_v = 3$, $T_v = 3$, $H_t = 3$, $k = 2$, $\sigma = 1$ and $\beta = 1$.
+%
+As learning algorithms we employed the Deep Q-Learning algorithm and MAPPO.
+For DQN, we set the discount factor $\gamma = 0.95$, the learning rate $\alpha = 0.001$, the training batch size to $32$.
+Other parameters were set to the default values provided by RLlib. 
+For MAPPO, we used a discount factor of $\gamma = 0.95$, a learning rate of $\alpha = 0.0002$,
+a generalized advantage estimation (GAE) $\lambda = 0.95$, and a training batch size of $2048$, leveraging 20 vectorized environments. All other parameters were set to RLlib's default values
 %
 Furthermore, we ran $15$ evaluation experiments, namely: $5$ different methods and for each method 
-  we varied the number of agents ($8$, $16$ and $32$) to assess the metrics under various conditions.
+  we varied the number of agents ($8$, $16$ and $32$) to assess the metrics under various conditions leaving the other parameters fixed.
   In this case, for each experiment we ran $100$ evaluation episodes.
 
-\subsection{Learning algorithm}
-In our experiments, we employed the well-known \emph{Deep Q-Learning} (DQN) algorithm implemented in RLlib.
+%\subsection{Learning algorithm}
+%In our experiments, we employed the well-known \emph{Deep Q-Learning} (DQN) algorithm implemented in RLlib.
 %
-We set the discount factor $\gamma$ to $0.95$, this parameter controls how much future rewards are 
-  considered in the decision-making process.
+%We set the discount factor $\gamma$ to $0.95$, this parameter controls how much future rewards are 
+%  considered in the decision-making process.
 %
-A value slightly below $1$ encourages the agent to prioritize immediate rewards while still accounting 
-  for long-term benefits, striking a balance between short-term and long-term planning.
+%A value slightly below $1$ encourages the agent to prioritize immediate rewards while still accounting 
+%  for long-term benefits, striking a balance between short-term and long-term planning.
 %
-We chose a learning rate of $0.001$ to control the speed at which the Q-network's weights are updated.
+%We chose a learning rate of $0.001$ to control the speed at which the Q-network's weights are updated.
 %
-This relatively low learning rate ensures stable learning, preventing large updates that could destabilize 
-  the training process, specially in complex environments with multiple interacting agents.
+%This relatively low learning rate ensures stable learning, preventing large updates that could destabilize 
+%  the training process, specially in complex environments with multiple interacting agents.
 %
-For the training batch size, we used a value of $32$, which balances computational efficiency and the diversity 
-  of experiences in each update. 
+%For the training batch size, we used a value of $32$, which balances computational efficiency and the diversity 
+%  of experiences in each update. 
 %
-A smaller batch size could lead to noisier updates, while a larger one might slow down training without
-  significantly improving performance.
+%A smaller batch size could lead to noisier updates, while a larger one might slow down training without
+%  significantly improving performance.
 %
 %Additionally, we enabled two key features of the DQN algorithm, namely:
 %  \begin{enumerate*}[label=(\roman*)]
@@ -635,11 +655,9 @@ Formally, for $N$ episodes, the mean reward $R_{mean}$ is computed as:
 On the other hand, the $L_{mean}$ represents the average number of time steps needed to reaching the terminal state, i.e., no more items to collect. 
 %
 It provides insights into the agent's efficiency in completing tasks, especially in environments 
-  where shorter episodes indicate better performance.
-%
-The mean episode length $L_{mean}$ is calculated as:
-  \[ L_{mean} = \frac{1}{N} \sum_{i=1}^{N} L_i \]
-  where $L_i$ is length of $i$-th episode.
+  where shorter episodes indicate better performance. Formally:
+\[ L_{mean} = \frac{1}{N} \sum_{i=1}^{N} L_i \]
+where $L_i$ is length of $i$-th episode.
 
 
 % \begin{figure}
@@ -667,7 +685,7 @@ The mean episode length $L_{mean}$ is calculated as:
 The results -- \Cref{fig:results} -- shows that employing a centralized training (i.e., CTDE) approach allows the model to converge 
  more rapidly -- in terms of episodes -- to a higher reward compared to a fully decentralized approach (i.e., DTDE). 
 %
-This difference becomes even more evident when considering the Mean Episode Length metric, where CTDE not only converges 
+This difference becomes even more evident when considering the $L_{mean}$, where CTDE not only converges 
  faster but also solves the task using shorter episodes than DTDE. 
  
 Additionally, we implemented another state-of-the-art algorithm, namely MAPPO, as a baseline for comparison. 
